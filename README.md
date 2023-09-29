@@ -5,6 +5,7 @@ The code and result for 12th SIGSPATIAL Cup competition (GISCUP 2023) [https://s
 **Directory** `./data_preprocess/`
 
 **How to run**
+
 - To produce the images for each region (i.e., crop the original tif into 6 regions), run
 `python extract_regions.py --data_root [DATA_ROOT] --output_dir [OUTPUT_DIR] --tif_file [TIF_FILE]`
 
@@ -31,7 +32,8 @@ We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything
 `pip install -r environment.yml`
 
 **How to run**
-Clone GitHub repository [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
+
+- Clone GitHub repository [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
 - To train model, run `train.py`
 - To test model, see `test.ipynb`
   
@@ -49,11 +51,13 @@ We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) o
 **Directory** `./data_postprocess/`
 
 **How to run**
--To generate output gpkg from the segmentation results, and do evaluation if the ground truth file exists, run, `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`
+
+- To generate output gpkg from the segmentation results, and do evaluation if the ground truth file exists, run, `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`
 
 ### Using External Data Resources
 **Description**
 We generate the topographic sinks as the external data from the ArcticDEM. Supraglacial lakes are formed in surface sinks. Therefore, the topographic sinks are potential locations for supraglacial lakes. The process of generating the topographic sinks from ArcticDEM has two steps. First, we employ the open-source WhiteboxToolsTM library to fill the depressions in the ArcticDEM and eliminate flat areas. Second, we generate topographic sinks by subtracting the output of the first step from the original ArcticDEM. Locations, where the subtraction results yield values smaller than zero, represent the topographic sinks.
 
 **How to run**
--To generate output gpkg from the segmentation results using topo-based and color-based extraction as a reference, run `python postprocess_external.py`
+
+- To generate output gpkg from the segmentation results using topo-based and color-based extraction as a reference, run `python postprocess_external.py`
