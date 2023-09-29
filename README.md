@@ -52,7 +52,7 @@ We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) o
 
 **How to run**
 
-- To generate output gpkg from the segmentation results, and do evaluation if the ground truth file exists, run, `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`
+- To generate output gpkg from the segmentation results, and do evaluation if the ground truth file exists, run `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`
 
 ### Using External Data Resources
 **Description**
