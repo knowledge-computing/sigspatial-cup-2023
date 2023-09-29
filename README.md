@@ -1,7 +1,7 @@
 # sigspatial-cup-2023
 The code and result for 12th SIGSPATIAL Cup competition (GISCUP 2023) [https://sigspatial2023.sigspatial.org/giscup/index.html](https://sigspatial2023.sigspatial.org/giscup/index.html)
 
-## Data Preprocessing]
+## Data Preprocessing
 **Directory** `./data_preprocess/`
 
 **How to run**
@@ -46,7 +46,3 @@ We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) o
 
 **How to run**
 -To generate output gpkg from the segmentation results, and do evaluation if the ground truth file exists, run, `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`
-
-
-
-
