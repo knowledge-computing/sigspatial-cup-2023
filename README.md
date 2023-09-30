@@ -33,11 +33,10 @@ We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything
 
 **How to run**
 
-- Clone GitHub repository [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
 - To train model, run `train.py`
-- To test model, see `test.ipynb`
-  
-    _`test.py` is the same code as `test.ipynb`_
+- To test model, see `test.py`
+- 
+- Please refer more detail on (GitHub repository [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake))
 
 ### DeepLabv3Plus
 **Directory** `./models/DeepLabv3Plus`
