@@ -36,7 +36,6 @@ num_epochs = 10
 def main(args):
     
     num_epochs = args.epoch
-    REGION = args.region
     
     print(f'Train start!')
     
@@ -47,7 +46,7 @@ def main(args):
     negative_file = f"/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_neg.txt"
     hard_negative_file = f"/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_hard_neg.txt"
     
-    checkpoint_dir = f'checkpoints_{REGION}_final/'
+    checkpoint_dir = f'checkpoints/'
     
     print(f'saving folder is: {checkpoint_dir}')
     
@@ -188,7 +187,6 @@ def main(args):
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--region', type=str, default='Greenland26X_22W_Sentinel2_2019-07-31_25_r6')
     parser.add_argument('--epoch', type=int, default=10)
     parser.add_argument('--batch', type=int, default=8)
     args = parser.parse_args()
