@@ -109,7 +109,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
     - `save_res_path`: the directory to the segmentation results <br><br>
 - To train, run `python main.py -c configs/config.yml --train`<br>
 - To test, run `python main.py -c configs/config.yml --predict_on_test`<br>
-- To inference given images, run `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
+- To inference given images, run `python main.py -c configs/config.yml --predict --filefolder [IMAGES_DIR_PATH]`<br>
 
 ---
 
