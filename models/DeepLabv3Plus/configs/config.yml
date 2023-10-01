@@ -3,7 +3,8 @@ dataset:
     base_path: "./data/train_crop1024_shift512/"
     dataset_name: "lake_crop"  
     save_res_path : './data/experiments/prediction_results/'
-
+model:
+    weight: "./weight/11_weight.pth.tar"
 image:
     out_stride: 16
     base_size: 1024

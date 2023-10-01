@@ -55,7 +55,7 @@ def predict(args):
 
     filefolder = args.filefolder
     config['network']['use_cuda'] = config['network']['use_cuda'] and torch.cuda.is_available()
-    check_path=config["training"]['model_last_checkpoint']["out_file"]
+    check_path=config["model"]['weight']
     predictor = Predictor(config, checkpoint_path=check_path)
     image_list=[] 
     prediction_list=[]
