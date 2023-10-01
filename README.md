@@ -96,6 +96,6 @@ Finally, we add model-based polygons (including DeepLab-based ones and SAM-based
     - SAM_DIR: directory path of the results from the SAM model
     - DPL_DIR: directory path of the results from the DeepLab model
     
-### Without Using External Data Resources
-**How to run**
-- To generate output GPKG from the segmentation results, and do evaluation if the ground truth file exists, run `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`
+[comment]: <> (### Without Using External Data Resources)
+[comment]: <> (**How to run**)
+[comment]: <> (- To generate output GPKG from the segmentation results, and do evaluation if the ground truth file exists, run `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`)
