@@ -42,6 +42,8 @@ We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything
 **Directory** `./models/DeepLabv3Plus`
 
 **Environment Setup**
+The model is trained with python 3.8 and CUDA 11.3 
+`pip install -r requirements.txt `
 
 **Description** 
 We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) on the glacier training data. The model applied Weighted Random Sampler to address the data imbalance between pixels with Lake and pixels with Non-Lake. The input mask consists of 0 (Non-Lake) and 1(Lake). 
