@@ -104,10 +104,11 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 - Configuration detail (./configs/config.yml) <br>
     - ` config['dataset']['base_path'] ` : the directory path of entire images and masks (train and test). Please make sure that the images are under  `train_images ` and the masks are under  `train_mask`  <br>
     - `config['dataset']['region_txt_base_path']` : the directory path of txt files that contains the list of Positive train set, Negative train set and Test set. Please make sure the name of each txt file : `train_pos.txt`,`train_neg.txt`,`test.txt` <br>
-    - `config['dataset']['save_res_path']`: the directory path to save the prediction results <br><br>
+    - `config['dataset']['save_res_path']`: the directory path to save the prediction results <br>
+    - `config["model"]['weight']` : the path of the model weight used for testing and inferencing. Please make sure to download and locate the model weights correctly <br><br>
 - To train the model, `python main.py -c configs/config.yml --train`<br>
 - To test the model with the test data, `python main.py -c configs/config.yml --predict_on_test`<br>
-- To predict the model with images `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
+- To inference the model with images `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
 
 **Model Weights** <br> 
 You can download the model weights [from this folder](https://drive.google.com/drive/folders/1nyzDF5ELzxYvb89rdOG7vBPvRfO_33a_?usp=sharing). Please make sure to place the weights under the `weight/` directory. <br> 
