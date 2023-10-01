@@ -1,60 +1,68 @@
-# sigspatial-cup-2023
-The code and result for 12th SIGSPATIAL Cup competition (GISCUP 2023) [https://sigspatial2023.sigspatial.org/giscup/index.html](https://sigspatial2023.sigspatial.org/giscup/index.html)
+# ACM SIGSPATIAL Cup 2023
+The code and result for 12th SIGSPATIAL Cup (GISCUP 2023) [https://sigspatial2023.sigspatial.org/giscup/index.html](https://sigspatial2023.sigspatial.org/giscup/index.html)
 
-The main task is to identify supraglacial lakes on the Greenland ice sheet from satellite imagery. 
-Our team proposes an approach to detecting surface lakes by leveraging potential spatial data (e.g., topographic sinks, soil). 
+The goal is to detect supraglacial lakes on the Greenland ice sheet from satellite imagery. 
+Our team proposes an emsembled approach that leverages two machine learning models, computer vision techniques, and external data (e.g., topographic sinks, soil) to automatically detecting surface lakes.
+
+## Results for Submission
+
+
 
 ## Data Preprocessing
 **Directory** `./data_preprocess/`
 
+- The data preprocssing mainly creates training dataset from the provided competition data for machine learnning models.
+
 **How to run**
 
 - To produce the images for each region (i.e., crop the original tif into 6 regions), run
-`python extract_regions.py --data_root [DATA_ROOT] --output_dir [OUTPUT_DIR] --tif_file [TIF_FILE]`
+`python extract_regions.py --data_root [DATA_ROOT] --output_path [OUTPUT_PATH] --tif_file [TIF_FILE]`
 
-    - DATA_ROOT: data directory path containing the competition data, e.g., ../dataset/2023_SIGSPATIAL_Cup_data_files
-    - OUTPUT_DIR: output directory path, default ../dataset/region_images
+    - DATA_ROOT: data directory of the competition data
+    - OUTPUT_DIR: output directory, default: ../dataset/region_images
     - TIF_FILE: the TIF file name you want to process, e.g., Greenland26X_22W_Sentinel2_2019-08-25_29.tif
 
-- To crop the region images to image patches for training machine learning models, run
+- To crop the region images to image patches, run
 `python crop_regions.py --data_root [DATA_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
 
-    - DATA_ROOT: data directory path, e.g., ../dataset/
+    - DATA_ROOT: data root of the region images, e.g., ../dataset/
     - CROP_SIZE: cropped image size, default 1024
     - SHIFT_SIZE: shift size, default 512
 
-- To convert the ground truth polygons in the gpkg files to image patch masks, run
+- To convert the ground truth polygons in the gpkg file to image patch segmentation masks, run
 `python construct_train_annotation.py --data_root [DATA_ROOT] --output_path [OUTPUT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
     
-    - DATA_ROOT: data directory path, e.g., ../dataset/
-    - OUTPUT_PATH: output directory path, e.g., ../dataset/train_crop1024_shift512
+    - DATA_ROOT: data directory of the competition data
+    - OUTPUT_PATH: output path, default: e.g., ../dataset/train_crop1024_shift512
     - CROP_SIZE: cropped image size, default 1024
     - SHIFT_SIZE: shift size, default 1024 
 
-- Generate training samples, run
+- To generate training samples, run
 `python generate_train_set.py --data_root [DATA_ROOT]
   
     - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
-    - You need [hard_neg_images.json](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link) under DATA_PATH
+    - You need [hard_neg_images.json](https://drive.google.com/file/d/13UDQGBR-KEjZ6sIOxSZwqKog6cjwuSGd/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/1emtgoMzDUkeFf2RAOzmHjeSO7uX5zZ9e/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/19XkGd3ExaY5r9olrQakA311QMauGah-8/view?usp=drive_link) under DATA_PATH
 
-- Generate training and testing samples using K-fold, run
+- To generate K-fold training and testing samples, run
 `python generate_train_test_set.py --data_root [DATA_ROOT]
   
     - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
-    - You need [hard_neg_images.json](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link) under DATA_PATH
+    - You need [hard_neg_images.json](https://drive.google.com/file/d/13UDQGBR-KEjZ6sIOxSZwqKog6cjwuSGd/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/1emtgoMzDUkeFf2RAOzmHjeSO7uX5zZ9e/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/19XkGd3ExaY5r9olrQakA311QMauGah-8/view?usp=drive_link) under DATA_PATH
 
   
 ## Image Segmentation Models 
-### Segment Anything Model
-**Directory** `./models/SAM/`
 
-**Description** 
-We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us. We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. Since the ratio of lake and non-lake regions in the training data are skewed, we consider the positive (lake) and negative (non-lake) samples' ratio in the training samples (Weighted Random Sampler).
+### Description
+We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes) and hard negative samples (no lake but having high variability in image color or detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: (Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/)) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
+
+### [Segment Anything Model](https://segment-anything.com/)
+**Directory** `./models/SAM/`
+<!-- - We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us.  -->
 
 **Environment Setup** 
 
-The model is trained with python 3.11 and CUDA 11.4.
-- To install the environment, `pip install -r environment.yml`
+- The model is trained with python 3.11 and CUDA 11.3
+- To install the environment, `cd ./models/SAM/` and `pip install -r environment.yml`
 
 **How to run**
 
@@ -65,17 +73,18 @@ The model is trained with python 3.11 and CUDA 11.4.
     - REGION_NAME: The region name where to generate the test prediction mask
     - BEST_EPOCH: The model from the (best) epoch from the training
   
-- Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
+**Model Weights**
+    Please provide the model weights and running examples for testing
 
-### DeepLabv3Plus
+<!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
+
+### DeepLabv3+
 **Directory** <br> 
 `./models/DeepLabv3Plus/`<br><br>
-**Description** <br>
-We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) on the glacier training data. The model applied Weighted Random Sampler to address the data imbalance between pixels with Lake and pixels with Non-Lake. The input mask consists of 0 (Non-Lake) and 1(Lake). <br>
 
 **Environment Setup** <br>
-The model is trained with python 3.8 and CUDA 11.3. We recommend to run in a conda environment. <br>
-`conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge` <br>
+- The model is trained with python 3.8 and CUDA 11.3
+- `conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge`
 - To install the environment, `pip install -r requirements.txt ` <br>
 
 **How to run** <br>
