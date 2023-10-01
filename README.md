@@ -44,8 +44,12 @@ The model is trained with python 3.11 and CUDA 11.4.
 
 **How to run**
 
-- To train model, run `train.py`
-- To test model, run `test.py`
+- To train model, run `train.py --epoch [NUM_EPOCH] --batch [NUM_BATCH]`
+    - NUM_EPOCH: The number of epoch to train the model
+    - NUM_BATCH: The number of batch to train the model
+- To test model, run `test.py --region [REGION_NAME] --epoch [BEST_EPOCH]`
+    - REGION_NAME: The region name where to generate the test prediction mask
+    - BEST_EPOCH: The model from the (best) epoch from the training
   
 - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
 
