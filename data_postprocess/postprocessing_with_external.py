@@ -578,7 +578,6 @@ def postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_
         os.makedirs('Intermediate/Output')
 
     TP1,TP2,TP3,FP1,FP2,FP3,FN1,FN2,FN3 = [0]*9
-    output_gpkgs = []
 
     for fid in range(1, 7):
         for tid in range(1, 5):
@@ -796,6 +795,8 @@ def postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_
             processed_polygon = processed_polygon.drop('p_id', axis=1)
             processed_polygon = processed_polygon.drop('m_id', axis=1)
             processed_polygon = processed_polygon.drop('m_area', axis=1)
+            # processed_polygon = processed_polygon.drop('m2_id', axis=1)
+            # processed_polygon = processed_polygon.drop('m2_area', axis=1)
 
             if not os.path.isfile(output_gpkg):
                 processed_polygon.to_file(output_gpkg, driver="GPKG")
@@ -803,9 +804,8 @@ def postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_
                 original_submission = gpd.read_file(output_gpkg)
                 submission = original_submission.copy()
                 submission = gpd.GeoDataFrame(pd.concat([submission, processed_polygon], ignore_index=True))
+                print(submission.columns)
                 submission.to_file(output_gpkg, driver="GPKG")
-                
-            output_gpkgs.append(output_gpkg)
 
     F1 = 0.0
     if (TP1+FP1+FN1) > 0:
@@ -897,11 +897,11 @@ import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_root', type=str, default='../dataset/2023_SIGSPATIAL_Cup_data_files/')
-    parser.add_argument('--result_name', type=str, default='../results/postprocessed_output.gpkg')
+    parser.add_argument('--result_name', type=str, default='../results/lake_poygons_test.gpkg')
     parser.add_argument('--data_topo', type=str, default='../dataset/2023_SIGSPATIAL_Cup_data_files/topographic_sink.tif')
     parser.add_argument('--data_soil', type=str, default='../dataset/2023_SIGSPATIAL_Cup_data_files/NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif')
-    parser.add_argument('--sam_dir', type=str, default='../results/sam_pos_hardneg_2/')
-    parser.add_argument('--dpl_dir', type=str, default='../results/dl3p/')
+    parser.add_argument('--sam_dir', type=str, default='../results/sam/final_ep9_predmask/gpkgs/')
+    parser.add_argument('--dpl_dir', type=str, default='../results/dplv3/lowest_loss/gpkgs/')
 
 
     args = parser.parse_args()

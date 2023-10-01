@@ -2,6 +2,7 @@ import os
 import glob
 import argparse
 import pandas as pd
+import geopandas as gpd
 import numpy as np
 import json
 from PIL import Image
@@ -9,6 +10,10 @@ import sys
 import cv2
 
 from shapely import Polygon, make_valid, is_valid
+from rasterio.control import GroundControlPoint
+from rasterio.transform import from_gcps
+from shapely.geometry import Polygon, shape
+
 from matplotlib.gridspec import GridSpec
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -342,7 +347,62 @@ def filter_by_manual_mask(polys, masks):
             out_polys.append(poly)
     return out_polys
 
+
+def convert_img_to_geocoord(test_region, polys, out_gpkg_file):
+    region_num = int(test_region[-1])
+    region_image_file = test_region[:-3] + '.tif'
     
+    region_to_min_x_y = {
+        1: (2, 122),
+        2: (0, 130),
+        3: (0, 138),
+        4: (0, 145),
+        5: (54, 0),
+        6: (55, 19),
+    }
+
+    out_img = []
+    out_region = []
+    out_geom = []
+
+    control_points = [
+        # order - row, col, x, y
+        GroundControlPoint(0, 0, -5684468.9195119608193636, 15654303.3928040582686663),
+        GroundControlPoint(0, 87040, -2357929.4485410945490003, 15654303.3928040582686663),
+        GroundControlPoint(160000, 87040, -2357929.4485410945490003, 9539341.1299899667501450),
+        GroundControlPoint(160000, 0, -5684468.9195119608193636, 9539341.1299899667501450)
+    ]
+    transform_matrix = from_gcps(control_points)
+
+    # the write is bad at this step
+    filtered_polys = []
+    for poly in polys:
+        pts = np.array(poly)
+        pts[:, 0] += region_to_min_x_y[region_num][0] * 1024
+        pts[:, 1] += region_to_min_x_y[region_num][1] * 1024
+        transformed_pts = np.apply_along_axis(lambda x: transform_matrix * x, axis=1, arr=pts)
+        geom = Polygon(transformed_pts)
+        if shape(geom).area < 100000: continue;
+        filtered_polys += split_poly_by_narrow_streams(poly)
+
+    filtered_polys = remove_duplicates(filtered_polys)
+    for poly in filtered_polys:
+        polys = split_poly_by_narrow_streams(poly)
+        pts = np.array(poly)
+        pts[:, 0] += region_to_min_x_y[region_num][0] * 1024
+        pts[:, 1] += region_to_min_x_y[region_num][1] * 1024
+        transformed_pts = np.apply_along_axis(lambda x: transform_matrix * x, axis=1, arr=pts)
+        geom = Polygon(transformed_pts)
+        if shape(geom).area < 100000: continue;
+        out_img.append(region_image_file)
+        out_region.append(region_num)
+        out_geom.append(geom)
+
+    print('# valid geometries =', len(out_geom))
+    out_df = pd.DataFrame({'image': out_img, 'region_num': out_region, 'geometry': out_geom})
+    out_geo_df = gpd.GeoDataFrame(out_df, geometry=out_df['geometry'], crs='EPSG:3857')
+    out_geo_df.to_file(out_gpkg_file, driver='GPKG')
+    return out_geo_df
     
 
     

@@ -121,6 +121,13 @@ We then compare the SAM-based results and topographic sink on a vector-wise basi
 Finally, we add model-based polygons (including DeepLab-based ones and SAM-based ones that were removed) that reach the relative-area criteria of the lake candidate.
 
 **How to run**
+- To merge segmentation results from image patches and do priliminary preprocess on the polygons, run `python postprocessing_merge.py --data_root [DATA_ROOT] --result_path [RESULT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --out_gpkg_path [OUT_GPKG_PATH]
+    - DATA_ROOT: data directory path for the provided dataset
+    - RESULT_PATH: the segmentation result path, e.g., ../results/deeplabv3p_update/2019-08-25_29_r5
+    - CROP_SIZE: cropped image size, default 1024
+    - SHIFT_SIZE: shift size, default 1024 
+    - OUT_GPKG_PATH: the directory path of output gpkg files for each region
+    
 - To generate a single GPKG file that integrates results from different models, using topo-based and color-based extraction as a reference to postprocess, run `python postprocessing_with_external.py --data_root [DATA_ROOT] --result_name [RESULT_NAME] --data_topo [DATA_TOPO] --data_soil [DATA_SOIL] --sam_dir [SAM_DIR] --dpl_dir [DPL_DIR]`
     - DATA_ROOT: data directory path for the provided dataset
     - RESULT_NAME: name of the output GPKG file

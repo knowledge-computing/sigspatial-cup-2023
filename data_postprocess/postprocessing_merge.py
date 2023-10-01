@@ -1,9 +1,8 @@
 import os
 import glob
 import argparse
-from postproc import *
-from giscup_evaluation_f1 import *
-from output_gpkg import convert_img_to_geocoord
+
+from utils import *
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -39,7 +38,6 @@ def main():
             
         print()
         
-
 
 if __name__ == '__main__':
 

@@ -75,8 +75,8 @@ def giscup_evaluation_f1_per_map(targeted_time, targeted_region, groundtruth_gpk
     ### STEP 5: After assessing each submitted lake, each remaining test polygon that does not have an associated submitted lake, will be considered a “False Negative” in computing the F1 score.
     FN = groundtruth_flag.sum()-1
     
-    #F1 = 2*TP/(2*TP + FP + FN)
-    return TP, FP, FN
+    F1 = 2*TP/(2*TP + FP + FN)
+    return TP, FP, FN, F1
 
 
 
@@ -93,17 +93,26 @@ def giscup_evaluation_f1(groundtruth_gpkg, submitted_gpkg):
     '''
 
     our_testing_set = [
+        ['2019-06-03_05', 2],
+        ['2019-06-03_05', 4],
         ['2019-06-03_05', 6],
         ['2019-06-19_20', 1],
+        ['2019-06-19_20', 3],
+        ['2019-06-19_20', 5],        
         ['2019-07-31_25', 4],
-        ['2019-08-25_29', 5]
+        ['2019-08-25_29', 1],
+        ['2019-08-25_29', 3],
+        ['2019-08-25_29', 5],
+        ['2019-07-31_25', 2],
+        ['2019-07-31_25', 6]
+
     ]
 
     TP = 0
     FP = 0
     FN = 0
     for traversal in range(0, len(our_testing_set)):
-        tp, fp, fn = giscup_evaluation_f1_per_map(our_testing_set[traversal][0], our_testing_set[traversal][1], groundtruth_gpkg, submitted_gpkg)
+        tp, fp, fn, _ = giscup_evaluation_f1_per_map(our_testing_set[traversal][0], our_testing_set[traversal][1], groundtruth_gpkg, submitted_gpkg)
         TP += tp
         FP += fp
         FN += fn
@@ -114,4 +123,5 @@ def giscup_evaluation_f1(groundtruth_gpkg, submitted_gpkg):
     print('TP', TP)
     print('FP', FP)
     print('FN', FN)
+    print('F1', F1)
     return F1
