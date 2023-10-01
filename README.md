@@ -12,23 +12,43 @@ Our team proposes an approach to detecting surface lakes by leveraging potential
 - To produce the images for each region (i.e., crop the original tif into 6 regions), run
 `python extract_regions.py --data_root [DATA_ROOT] --output_dir [OUTPUT_DIR] --tif_file [TIF_FILE]`
 
+    - DATA_ROOT: data directory path containing the competition data, e.g., ../dataset/2023_SIGSPATIAL_Cup_data_files
+    - OUTPUT_DIR: output directory path, default ../dataset/region_images
+    - TIF_FILE: the TIF file name you want to process, e.g., Greenland26X_22W_Sentinel2_2019-08-25_29.tif
+
 - To crop the region images to image patches for training machine learning models, run
-`python crop_regions --data_root [DATA_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
+`python crop_regions.py --data_root [DATA_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
 
-- To convert the ground truth polygons in the gpkg files to image patch level, run
-`python construct_train_annotation.py --data_root [DATA_ROOT] --output_dir [OUTPUT_DIR] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
+    - DATA_ROOT: data directory path, e.g., ../dataset/
+    - CROP_SIZE: cropped image size, default 1024
+    - SHIFT_SIZE: shift size, default 512
 
-- Then convert the segmentation masks for training, run
-`python construct_segmentation_masks.py --data_root [DATA_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
+- To convert the ground truth polygons in the gpkg files to image patch level polygons, run
+`python construct_train_annotation.py --data_root [DATA_ROOT] --output_path [OUTPUT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
+    
+    - DATA_ROOT: data directory path, e.g., ../dataset/
+    - OUTPUT_PATH: output directory path, e.g., ../dataset/train_crop1024_shift512
+    - CROP_SIZE: cropped image size, default 1024
+    - SHIFT_SIZE: shift size, default 1024 
+    - You need [annotation.json](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link) under DATA_ROOT
 
-- Split the image patches into training and testing sets, run
-`python split_train_test.py --data_root [DATA_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
+- To generate the segmentation masks for training, run
+`python construct_segmentation_masks.py --data_path [DATA_ROOT] --crop_size [CROP_SIZE]
+    - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
+    - CROP_SIZE: cropped image size, default 1024
+
+- Generate training samples, run
+`python generate_train_set.py --data_root [DATA_ROOT]
   
-    - DATA_ROOT: data directory path for the provided dataset
-    - OUTPUT_DIR: output directory path
-    - TIF_FILE: target TIF file you want to convert
-    - CROP_SIZE: cropped image size
-    - SHIFT_SIZE: shift size
+    - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
+    - You need [hard_neg_images.json](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link) under DATA_PATH
+
+- Generate training and testing samples using K-fold, run
+`python generate_train_test_set.py --data_root [DATA_ROOT]
+  
+    - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
+    - You need [hard_neg_images.json](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link) under DATA_PATH
+
   
 ## Image Segmentation Models 
 ### Segment Anything Model
