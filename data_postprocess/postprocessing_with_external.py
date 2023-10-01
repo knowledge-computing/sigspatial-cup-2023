@@ -755,7 +755,7 @@ def postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_
 
                 if overlapped_model_polygon.shape[0] == 0 and (overlapped_topo_polygon.shape[0] > 0 or overlapped_color_polygon.shape[0] > 0):
                     ### Add this model-based polygon
-                    revived_record = gpd.GeoDataFrame([{'image':target_stamp, 'region_num':targeted_region, 'geometry':model_polygon2[(model_polygon2['m2_id']==selected_mid)]['geometry'].values[0], 'm2_id':selected_mid, 'm2_area':model_polygon2[(model_polygon2['m2_id']==selected_mid)]['m2_area'].values[0]}])
+                    revived_record = gpd.GeoDataFrame([{'image':target_stamp, 'region_num':targeted_region, 'geometry':model_polygon2[(model_polygon2['m2_id']==selected_mid)]['geometry'].values[0]}])
                     processed_polygon = gpd.GeoDataFrame( pd.concat( [processed_polygon, revived_record], ignore_index=True), crs=processed_polygon.crs )
 
             #processed_polygon.to_file('Intermediate/Output/postprocessed_polygons_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'(7).gpkg', layer='polygon', driver='GPKG')
