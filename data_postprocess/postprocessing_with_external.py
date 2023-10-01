@@ -867,30 +867,30 @@ def sweeper():
 
 def preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil):
     runningtime_start = datetime.now()
-    # # some preprocessing for color-based extraction
-    # initialization_dirs()
-    # image_shape = preprocessing_delineation(path_to_source)
-    # region_extent, region_projection = preprocessing_boundary(path_to_source, image_shape)
-    # preprocessing_visualization(path_to_source, image_shape, region_extent, region_projection)
-    # print('Finish preprocessing for color-based extraction......', datetime.now()-runningtime_start)
+    # some preprocessing for color-based extraction
+    initialization_dirs()
+    image_shape = preprocessing_delineation(path_to_source)
+    region_extent, region_projection = preprocessing_boundary(path_to_source, image_shape)
+    preprocessing_visualization(path_to_source, image_shape, region_extent, region_projection)
+    print('Finish preprocessing for color-based extraction......', datetime.now()-runningtime_start)
 
-    # # gpkg for color-based polygon
-    # color_based_extraction()
-    # print('Finish conducting color-based extraction......', datetime.now()-runningtime_start)
-    # png_to_gpkg()
+    # gpkg for color-based polygon
+    color_based_extraction()
+    print('Finish conducting color-based extraction......', datetime.now()-runningtime_start)
+    png_to_gpkg()
 
-    # # gpkg for topo-based polygon
-    # topo_to_gpkg(path_to_source, path_to_topo)
-    # # gpkg for soil-based polygon
-    # soil_to_gpkg(path_to_source, path_to_soil)
-    # print('Finish preparing for postprocessing......', datetime.now()-runningtime_start)
+    # gpkg for topo-based polygon
+    topo_to_gpkg(path_to_source, path_to_topo)
+    # gpkg for soil-based polygon
+    soil_to_gpkg(path_to_source, path_to_soil)
+    print('Finish preparing for postprocessing......', datetime.now()-runningtime_start)
     sweeper()
 
 
 
 def postprocessing_with_external(path_to_source, path_to_topo, path_to_soil, path_to_model_sam, path_to_model_lab, output_gpkg):
 
-    # preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil)
+    preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil)
     # sweeper()
     postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_gpkg)
 
