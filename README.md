@@ -5,7 +5,7 @@ The goal is to detect supraglacial lakes on the Greenland ice sheet from satelli
 
 **Link to the submission GPKG:** [https://github.com/knowledge-computing/sigspatial-cup-2023/blob/main/GPKG/lake_polygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/blob/main/GPKG/lake_polygons_test.gpkg)
 
-The following content is organized as follows:
+The content is organized as follows:
 1. <a href="#1-data-preprocessing">Data Preprocessing</a>
 2. <a href="#2-image-segmentation-models">Image Segmentation Models</a>
     * 2.1. <a href="#21-segment-anything-model">Segment Anything Model</a>
@@ -64,7 +64,7 @@ The data preprocssing creates a training dataset from the provided competition d
 ## 2. Image Segmentation Models 
 
 ### Description
-We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes), negative samples, and hard negative samples (no lake but having high variability in image color or some detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
+We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes), negative samples ((no lake), and hard negative samples (no lake but having high variability in image color or some detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to ensure balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
 
 ### 2.1. Segment Anything Model
 **Directory** `./models/SAM/`
@@ -79,17 +79,17 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 **How to run**
 
 - To train, run `train.py --epoch [EPOCH] --batch [BATCH] --lr [LR] --img_dir [IMG_DIR] --mask_dir [MASK_DIR] --postive_file [POSITIVE_FILE] --hard_negative_file [HARD_NEGATIVE_FILE]`
-    - EPOCH: The maximum number of training epoches 
-    - BATCH: Batch size
+    - EPOCH: the maximum number of training epoches 
+    - BATCH: batch size
     - IMG_DIR: the directory of training images
     - MASK_DIR: the directory of corresponding masks
     - POSITIVE_FILE: the txt file containing positive samples
     - HARD_NEGATIVE_FILE: the txt file containing hard negative samples
-- To test/inference, run `test.py --region [REGION] --model [MODEL_WEIGHT] --img_dir [IMG_DIR] --test_file [TEST_FILE]`
-    - REGION: The region name to generate segmentation masks
-    - MODEL_WEIGHT: model weight (model checkpoint (.pth file))
+- To test/inference, run `test.py --region [REGION] --model [MODEL] --img_dir [IMG_DIR] --test_file [TEST_FILE]`
+    - REGION: the region name to generate segmentation masks
+    - MODEL: the model weight, i.e., model checkpoint (.pth file)
     - IMG_DIR: the directory of testing images
-    - TEST_FILE: the txt file containing test samples
+    - TEST_FILE: the txt file containing test images
 
 <!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
 
@@ -104,8 +104,8 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 
 **How to run** <br>
 - To modify configuration file ./configs/config.yml <br>
-    - `base_path` : the root directory of image and mask folder <br> 
-    - `region_txt_base_path` : the directory of txt files indicating positive and negative samples, named as `train_pos.txt`, `train_neg.txt`, `test.txt` (if needs) <br>
+    - `base_path`: the root directory of image and mask folder <br> 
+    - `region_txt_base_path`: the directory of txt files indicating positive and negative samples, named as `train_pos.txt`, `train_neg.txt`, `test.txt` (if needs) <br>
     - `save_res_path`: the directory to the segmentation results <br><br>
 - To train, run `python main.py -c configs/config.yml --train`<br>
 - To test, run `python main.py -c configs/config.yml --predict_on_test`<br>
@@ -132,7 +132,7 @@ We use the soil information to further illiminate the detected lakes that are no
 After generating the segmentation results from the two models (you can find these intermediate results [HERE](https://drive.google.com/drive/u/0/folders/1JAKijqh7vLPZ2_EofWuNO-lb1A-_Bd5f)), our approach first merges and extracts polygons from the segmentation masks respectively, and does some priliminary preprocesses on the polygons. Second, our approach treats the union of topographic sink, color thresholding, and the inverse of soil allocation as lake candidates, and removes all the model-based polygons that are not in the lake candidate. Then our approach compares the SAM-based results and topographic sink on a vector-wise basis. For each lake candidate, our approach only keeps the SAM-based polygon that has the largest overlapping area with the color-thresholding polygon. Lastly, our approach adds model-based polygons (from SAM and DeepLab that were removed) that reach the relative-area criteria of the lake candidates.
 
 **How to run**
-- To merge segmentation results from image patches, run `python postprocessing_merge.py --data_root [DATA_ROOT] --result_path [RESULT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --out_gpkg_path [OUT_GPKG_PATH]`
+- To merge the segmentation results of image patches, run `python postprocessing_merge.py --data_root [DATA_ROOT] --result_path [RESULT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --out_gpkg_path [OUT_GPKG_PATH]`
     - DATA_ROOT: data directory of the competition data
     - RESULT_PATH: the segmentation result path, e.g., ../results/deeplabv3p_update/2019-08-25_29_r5
     - CROP_SIZE: cropped image size, default 1024
