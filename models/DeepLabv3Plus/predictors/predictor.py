@@ -62,7 +62,7 @@ class Predictor():
 
     def inference_on_test_set(self):
         print("inference on test set")
-        self.train_loader, self.val_loader, self.test_loader, self.nclass = initialize_data_loader(config)
+        self.train_loader, self.val_loader, self.test_loader, self.nclass = initialize_data_loader(self.config)
         self.model.eval()
         self.evaluator.reset()
         tbar = tqdm(self.test_loader, desc='\r')
