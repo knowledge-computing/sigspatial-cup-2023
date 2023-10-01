@@ -9,10 +9,12 @@ warnings.filterwarnings("ignore")
 
 
 def main():
-    
-    # manual_mask_file = os.path.join(args.data_root, f'mountain_mask.csv')
-    # manual_mask_dict = load_manual_mask(manual_mask_file)
-    manual_mask_dict = None
+
+    manual_mask_file = os.path.join(args.data_root, f'mountain_mask.csv')
+    if os.path.exists(manual_mask_file):
+        manual_mask_dict = load_manual_mask(manual_mask_file)
+    else:
+        manual_mask_dict = None
     
     pred_files = glob.glob(os.path.join(args.result_root, '*.jpg'))
     test_regions = list(set([os.path.basename(p).split('__')[0] for p in pred_files]))
