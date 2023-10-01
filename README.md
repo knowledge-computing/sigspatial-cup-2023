@@ -3,7 +3,7 @@ The code and result for 12th SIGSPATIAL Cup (GISCUP 2023) [https://sigspatial202
 
 The goal is to detect supraglacial lakes on the Greenland ice sheet from satellite imagery. Our team proposes an ensembled approach that leverages two machine learning models, computer vision techniques, and external data (e.g., topographic sinks, soil) to automatically detect surface lakes.
 
-**Link to the submission GPKG** [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg)
+**Link to the submission GPKG:** [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg)
 
 The following content is organized as follows:
 1. <a href="#1-data-preprocessing">Data Preprocessing</a>
@@ -122,7 +122,7 @@ The process of generating topographic sinks from ArcticDEM has two steps. First,
 
 
 ### 3.2. Soil Data
-We use the soil information to further illiminate the detected lakes that are not located in the glacier area. We use [Northern Circumpolar Soil Carbon Database version 2 (NCSCDv2)](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf), a geospatial database that records the amount of organic carbon storage in soils of the northern circumpolar permafrost region down to a depth of 300 cm. Since the dataset delimited the areas that are covered by glaciers for most times in a year, we use this dataset to identify the glacier area and exclude lakes that are not located on glaciers. You can download the file [HERE](https://drive.google.com/file/d/15RIpVXElhw882SXyvKBltMBRn3lMtsNr/view?usp=drive_link). 
+We use the soil information to further illiminate the detected lakes that are not located in the glacier area. We use [Northern Circumpolar Soil Carbon Database version 2 (NCSCDv2)](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf), a geospatial database that records the amount of organic carbon storage in soils of the northern circumpolar permafrost region down to a depth of 300 cm. Since the dataset delimited the areas that are covered by glaciers for most times in a year, we use this dataset to identify the glacier area and exclude lakes that are not located on glaciers. You can download the file [HERE](https://drive.google.com/file/d/15RIpVXElhw882SXyvKBltMBRn3lMtsNr/view?usp=drive_link). Besides soil data, we find that there are some mountain regions that soil data do not cover, so we manually created a mountain mask file as the external human knowledge to illiminate the wrongly detected lakes. You can download the file [HERE](https://drive.google.com/file/d/1ejWeTAISJRrL1z83YYgV4ttw60LGQTQc/view?usp=drive_link).
 
 ---
 
