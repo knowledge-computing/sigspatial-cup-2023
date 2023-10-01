@@ -2,7 +2,16 @@
 The code and result for 12th SIGSPATIAL Cup (GISCUP 2023) [https://sigspatial2023.sigspatial.org/giscup/index.html](https://sigspatial2023.sigspatial.org/giscup/index.html)
 
 The goal is to detect supraglacial lakes on the Greenland ice sheet from satellite imagery. 
-Our team proposes an emsembled approach that leverages two machine learning models, computer vision techniques, and external data (e.g., topographic sinks, soil) to automatically detecting surface lakes.
+Our team proposes an ensembled approach that leverages two machine learning models, computer vision techniques, and external data (e.g., topographic sinks, soil) to automatically detect surface lakes.
+
+1. <a id="data-preprocessing">Data Preprocessing</a>
+2. <a id="image-segmentation-models">Image Segmentation Models</a>
+    * 2.1. <a id="segment-anything-model">Segment Anything Model</a>
+    * 2.2. <a id="deeplabv3plus">DeepLabv3Plus</a>
+3. <a id="external-data-resources">External Data Resources</a>
+    * 3.1. <a id="topographic-sink">Topographic Sink</a>
+    * 3.2. <a id="soil">Soil</a>
+4. <a id="data-post-processing">Data Post-Processing</a>
 
 ## Results for Submission
 
