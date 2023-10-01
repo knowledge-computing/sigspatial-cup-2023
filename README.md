@@ -20,7 +20,7 @@ The content is organized as follows:
 ## 1. Data Preprocessing
 **Directory** `./data_preprocess/`
 
-The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region_images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link), [inference set](https://drive.google.com/file/d/1-MwE2wfwRkB7JJ3chsJdlghAcJ0VbiXC/view?usp=drive_link). You can download these files to avoid the following steps and directly go to [Image Segmentation Models](#2-image-segmentation-models). You can refer to the dataset organization [HERE](https://drive.google.com/drive/folders/1hYj5GVdE-5TdEzVwY4o48gzScOv0iIZI?usp=drive_link).
+The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region_images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link), [inference set](https://drive.google.com/file/d/1-MwE2wfwRkB7JJ3chsJdlghAcJ0VbiXC/view?usp=drive_link). You can download these files to avoid the following steps and directly go to [Image Segmentation Models](#2-image-segmentation-models). Please refer to the [dataset organization](https://drive.google.com/drive/folders/1hYj5GVdE-5TdEzVwY4o48gzScOv0iIZI?usp=drive_link).
 
 **How to run**
 
