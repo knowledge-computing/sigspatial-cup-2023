@@ -104,8 +104,8 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 
 **How to run** <br>
 - To modify configuration file ./configs/config.yml <br>
-    - `base_path'` : the root directory of image and mask folder <br> 
-    - `region_txt_base_path` : the directory of txt files indicating positive and negative samples, named as `train_pos.txt`, `train_neg.txt`, `test.txt` (if exists) <br>
+    - `base_path` : the root directory of image and mask folder <br> 
+    - `region_txt_base_path` : the directory of txt files indicating positive and negative samples, named as `train_pos.txt`, `train_neg.txt`, `test.txt` (if needs) <br>
     - `save_res_path`: the directory to the segmentation results <br><br>
 - To train, run `python main.py -c configs/config.yml --train`<br>
 - To test, run `python main.py -c configs/config.yml --predict_on_test`<br>
