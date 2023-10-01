@@ -864,6 +864,16 @@ def sweeper():
         shutil.rmtree('Intermediate/Extraction')
 
 
+def file_check():
+    topo_gpkg = 'Intermediate/External/topo_based_polygon.gpkg'
+    color_gpkg = 'Intermediate/Postprocessing_Output/color_based_polygon.gpkg'
+    soil_gpkg = 'Intermediate/External/soil_based_polygon.gpkg'
+
+    if (os.path.isfile(topo_gpkg) == False) or (os.path.isfile(color_gpkg) == False) or (os.path.isfile(soil_gpkg) == False):
+        print('please put the preprocessed external datasets to the correct location')
+        return False
+    return True
+
 
 def preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil):
     runningtime_start = datetime.now()
@@ -890,9 +900,11 @@ def preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil):
 
 def postprocessing_with_external(path_to_source, path_to_topo, path_to_soil, path_to_model_sam, path_to_model_lab, output_gpkg):
 
-    preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil)
+    if file_check() == True:
+        postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_gpkg)
+    # preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil)
     # sweeper()
-    postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_gpkg)
+    
 
 
 
