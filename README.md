@@ -84,10 +84,10 @@ Finally, we add model-based polygons (including DeepLab-based ones and SAM-based
 **How to run**
 - To generate a single GPKG file that integrates results from different models, using topo-based and color-based extraction as a reference to postprocess, run `python postprocessing_with_external.py --data_root [DATA_ROOT] --result_name [RESULT_NAME] --data_topo [DATA_TOPO] --data_soil [DATA_SOIL] --sam_dir [SAM_DIR] --dpl_dir [DPL_DIR]`
     - DATA_ROOT: path to the directory where you store the provided dataset (e.g., lakes_regions.gpkg, lake_polygons_training.gpkg, and all the tif files)
-    - RESULT_NAME: name of the output gpkg file.
+    - RESULT_NAME: name of the output gpkg file
     - DATA_TOPO: path to topographic_sink.tif
     - DATA_SOIL: path to NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif
-    - SAM_DIR: path to the directory where you store the results from the SAM model.
+    - SAM_DIR: path to the directory where you store the results from the SAM model
     - DPL_DIR: path to the directory where you store the results from the DeepLab model
     
 ### Without Using External Data Resources
