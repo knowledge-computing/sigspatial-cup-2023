@@ -10,10 +10,12 @@ import argparse
 
 
 def main(args):
-    ep = args.epoch
+    model_weight = args.model
     REGION = args.region
+    test_region = args.test_file
     
-    test_file = f"/home/yaoyi/shared/sigspatial/target_crop1024_shift512/{REGION}/test.txt"
+    test_file = f"/home/yaoyi/shared/sigspatial/target_crop1024_shift512/{REGION}/{test_region}"
+    test_dir = args.img_dir
     
     with open(test_file, 'r') as f:
         test_list = f.readlines()
@@ -25,7 +27,7 @@ def main(args):
     model = SamModel.from_pretrained("facebook/sam-vit-base")
     model.to(device)
 
-    model.load_state_dict(torch.load(f'checkpoints/ep{ep}.pth'))
+    model.load_state_dict(torch.load(f'checkpoints_final/{model_weight}'))
     
     model.eval()
     INPUT_PATCH_SIZE=1024
@@ -50,14 +52,13 @@ def main(args):
 
         return lake_seg, lake_seg_prob
 
-
-    output_dir = f'final_{REGION}_ep{ep}_predmask/'
+    output_dir = f'final_{REGION}_predmask_check/'
 
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
     target_size = 1024
-    test_dir = args.img_dir
+    
 
     for img_name in test_list:
 
@@ -74,8 +75,11 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--region', type=str, default='Greenland26X_22W_Sentinel2_2019-08-25_29_r6')
-    parser.add_argument('--epoch', type=int, default=8)
+    parser.add_argument('--model', type=str, default='SAM_model.pth')
     parser.add_argument('--img_dir', type=str, default="/home/yaoyi/shared/sigspatial/target_crop1024_shift512/test_images")
+    parser.add_argument('--test_file', type=str, default="test.txt")
+    
+    
     args = parser.parse_args()
     
     
