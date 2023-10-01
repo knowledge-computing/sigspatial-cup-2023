@@ -2,7 +2,7 @@ dataset:
     region_txt_base_path : "./data_txt_folder/train_Greenland26X_22W_Sentinel2_2019-06-03_05_r2/"
     base_path: "./data/train_crop1024_shift512/"
     dataset_name: "lake_crop"  
-    save_res_path : './data/experiments/prediction_results/'
+    save_res_path : './experiments/prediction_results/'
 model:
     weight: "./weight/final_weight.pth.tar"
 image:
