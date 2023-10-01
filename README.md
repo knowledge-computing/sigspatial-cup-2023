@@ -129,7 +129,7 @@ We use the soil information to further illiminate the detected lakes that are no
 
 ---
 
-## 4. Data Post-Processing
+## 4. Data Postprocessing
 **Directory** `./data_postprocess/`
 
 After generating the segmentation results from the two models (you can find the results [HERE](https://drive.google.com/drive/u/0/folders/1JAKijqh7vLPZ2_EofWuNO-lb1A-_Bd5f)), our approach first merges and extracts polygons from the segmentation masks respectively, and does some priliminary preprocesses on the polygons. Second, our approach treats the union of topographic sink, color thresholding, and the inverse of soil allocation as lake candidates, and removes all the model-based polygons that are not in the lake candidate. Then our approach compares the SAM-based results and topographic sink on a vector-wise basis. For each lake candidate, our approach only keeps the SAM-based polygon that has the largest overlapping area with the color-thresholding polygon. Lastly, our approach adds model-based polygons (from SAM and DeepLab that were removed) that reach the relative-area criteria of the lake candidates.
