@@ -11,19 +11,12 @@ import random
 import cv2
 
 class DeepFashionSegmentation(Dataset):
-    """
-    DeepFashion dataset
-    """
-#    NUM_CLASSES = 14
-
     def __init__(self,
                  config,
                 data_dir_path,
-#                 base_dir=config['dataset']['base_path'],
                  split='train',
                  ):
         super().__init__()
-        # self._base_dir = config['dataset']['base_path']
         self.split = split
 
         self.train_pos_list=[]
@@ -34,8 +27,8 @@ class DeepFashionSegmentation(Dataset):
         self._image_dir = os.path.join(data_dir_path, 'train_images')
         self._cat_dir = os.path.join(data_dir_path, 'train_mask')           
         # elif self.split =='train_pos'or self.split =='train_neg':
-        #     self._image_dir = os.path.join(data_dir_path, 'images')
-        #     self._cat_dir = os.path.join(data_dir_path, 'mask')
+        #     self._image_dir = os.path.join(data_dir_path, 'train_images')
+        #     self._cat_dir = os.path.join(data_dir_path, 'train_mask')
         # elif self.split =='train_pos_aug':
         #     self._image_dir = os.path.join(data_dir_path, 'train_images_aug')
         #     self._cat_dir = os.path.join(data_dir_path, 'train_mask_aug')
@@ -74,7 +67,7 @@ class DeepFashionSegmentation(Dataset):
         self.categories.clear()
         each_image_list=sorted(os.listdir(self._image_dir))
         each_mask_list=sorted(os.listdir(self._cat_dir))
-#edit this part for getting the list of pair.
+
         target_list=[]
         if self.split =='train_pos':
             target_list=self.train_pos_list
@@ -112,9 +105,7 @@ class DeepFashionSegmentation(Dataset):
         seg = seg.convert('L')
         # Threshold
         _target = seg.point( lambda p: 1 if p > 127 else 0 )
-        # print(_target.size,'_target.size')
-        # seg = cv2.imread(self.categories[index], cv2.IMREAD_GRAYSCALE)  
-        # _target = cv2.threshold(seg, 127, 1, cv2.THRESH_BINARY)[1]  
+
 
         return _img, _target
 

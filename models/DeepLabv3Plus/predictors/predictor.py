@@ -70,13 +70,8 @@ class Predictor():
         test_loss = 0.0
         for i, sample in enumerate(tbar):
             image, target = sample['image'], sample['label']
-            # image = image.permute(0,3,1,2)
-            # target= target.permute(0,3,1,2)
-            # print('after image',image.shape)
-            # print('after target',target.shape)
             image = image.float()
             target = target.float()
-            # target = torch.argmax(target, dim=1)
             if self.config['network']['use_cuda']:
                 image, target = image.cuda(), target.cuda()
             with torch.no_grad():

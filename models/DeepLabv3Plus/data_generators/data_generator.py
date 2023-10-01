@@ -10,10 +10,9 @@ def initialize_data_loader(config):
         neg_data_dir=config['dataset']['base_path']
 
         train_set_pos = DeepFashionSegmentation(config,pos_data_dir,split='train_pos')
-        # train_set_pos_aug = DeepFashionSegmentation(config,pos_aug_data_dir,split='train_pos_aug')
         train_set_neg= DeepFashionSegmentation(config,neg_data_dir, split='train_neg')
 
-        test_data_dir=config['dataset']['test_base_path']
+        test_data_dir=config['dataset']['base_path']
         test_set = DeepFashionSegmentation(config, test_data_dir,split='test')
     else:
         raise Exception('dataset not implemented yet!')
@@ -56,9 +55,8 @@ def initialize_data_loader(config):
     test_sampler = test_sampler.double()
     test_sampler = WeightedRandomSampler(test_sampler, len(test_sampler))
 
-    train_loader = DataLoader(train_set, batch_size=config['training']['batch_size'], num_workers=config['training']['workers'], pin_memory=True, sampler=sampler,drop_last=True)
-    # train_loader_neg = DataLoader(train_set_neg, batch_size=config['training']['batch_size'], shuffle=True, num_workers=config['training']['workers'], pin_memory=True)   
-    val_loader = DataLoader(test_set, batch_size=config['training']['batch_size'],num_workers=config['training']['workers'], pin_memory=True, sampler=test_sampler,drop_last=True)
-    test_loader = DataLoader(test_set, batch_size=config['training']['batch_size'],num_workers=config['training']['workers'], pin_memory=True, sampler=test_sampler,drop_last=True)
+    train_loader = DataLoader(train_set, batch_size=config['training']['batch_size'], num_workers=config['training']['workers'], pin_memory=True, sampler=sampler,drop_last=True)   
+    val_loader = DataLoader(test_set, batch_size=config['training']['batch_size'], num_workers=config['training']['workers'], pin_memory=True, sampler=test_sampler,drop_last=True)
+    test_loader = DataLoader(test_set, batch_size=config['training']['batch_size'], num_workers=config['training']['workers'], pin_memory=True, sampler=test_sampler,drop_last=True)
 
     return train_loader, val_loader, test_loader, num_classes

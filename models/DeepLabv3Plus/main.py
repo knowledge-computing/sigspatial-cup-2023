@@ -8,8 +8,6 @@ import cv2
 from trainers.trainer import Trainer
 from predictors.predictor import Predictor
 
-#  CUDA_VISIBLE_DEVICES=0,1 python main.py -c configs/config_2019-06-03_05_r2.yml --train
-#  CUDA_VISIBLE_DEVICES=0 python main.py -c configs/config_2019-06-03_05_r2.yml --predict --filefolder /home/yaoyi/shared/sigspatial/data_crop1024_shift512/test_images_overlap/
 def train(args):
     config_path = args.conf
 

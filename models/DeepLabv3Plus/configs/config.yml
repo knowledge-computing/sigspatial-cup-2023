@@ -1,17 +1,8 @@
 dataset:
-    base_path: "/home/yaoyi/jang0124/sigspatial-cup/1026_pos_neg/"
-    base_aug_path: "/home/yaoyi/shared/sigspatial/data_crop1024_shift512/"
-    test_base_path : "/home/yaoyi/shared/sigspatial/data_crop1024_shift512/"
+    region_txt_base_path : "./data_txt_folder/train_Greenland26X_22W_Sentinel2_2019-06-03_05_r2/"
+    base_path: "./data/train_crop1024_shift512/"
     dataset_name: "lake_crop"  
-    #list of the dataset
-    train_img_dir: ["/home/yaoyi/jang0124/sigspatial-cup/1026_pos_neg/pos/images",'/home/yaoyi/jang0124/sigspatial-cup/1026_pos_neg/neg/images']
-    #  ['/home/yaoyi/shared/sigspatial/data_crop512_shift256/train_images/','/home/yaoyi/shared/sigspatial/data_crop512_shift256_aug/aug_train_images_img512/']
-    train_mask_dir: ["/home/yaoyi/jang0124/sigspatial-cup/1026_pos_neg/pos/mask",'/home/yaoyi/jang0124/sigspatial-cup/1026_pos_neg/neg/mask']
-    # ['/home/yaoyi/shared/sigspatial/data_crop512_shift256/train_mask','/home/yaoyi/shared/sigspatial/data_crop512_shift256_aug/aug_train_mask_img512']
-    test_img_dir : ['/home/yaoyi/shared/sigspatial/data_crop1024_shift512/test_images']
-    test_mask_dir : ['/home/yaoyi/shared/sigspatial/data_crop1024_shift512/test_mask']
-    save_res_path : '/home/yaoyi/jang0124/sigspatial-cup/deeplabV3-PyTorch/experiments/prediction_test/'
-    # test_pred_res_path : ''
+    save_res_path : './data/experiments/prediction_results/'
 
 image:
     out_stride: 16
@@ -25,8 +16,8 @@ network:
     num_classes: 2
 training:
     workers: 4
-    loss_type: 'ce'   #choices=['ce', 'focal']
-    epochs: 20
+    loss_type: 'dice'   #choices=['ce', 'focal']
+    epochs: 14
     start_epoch: 0
     batch_size: 8
     use_balanced_weights: false
@@ -39,6 +30,7 @@ training:
     weights_initialization: 
         use_pretrained_weights: false
         restore_from: "./experiments/checkpoint_last.pth.tar"
+    output_dir : "./experiments/"
     model_best_checkpoint: 
         enabled: true
         out_file: "./experiments/checkpoint_best.pth.tar"

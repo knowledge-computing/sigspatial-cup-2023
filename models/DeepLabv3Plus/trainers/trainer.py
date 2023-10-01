@@ -174,6 +174,16 @@ class Trainer(object):
             'optimizer': self.optimizer.state_dict(),
             'best_pred': self.best_pred,
         }, is_best = False, filename='checkpoint_last.pth.tar')
+        
+        if epoch > 10: 
+            weight_name=(str)(epoch)+'_weight.pth.tar'
+            self.saver.save_checkpoint({
+                'epoch': epoch + 1,
+    #            'state_dict': self.model.module.state_dict(),
+                'state_dict': self.model.state_dict(),
+                'optimizer': self.optimizer.state_dict(),
+                'best_pred': self.best_pred,
+            }, is_best = False, filename=weight_name)
 
         #if training on a subset reshuffle the data 
         if self.config['training']['train_on_subset']['enabled']:
@@ -187,11 +197,7 @@ class Trainer(object):
         test_loss = 0.0
         for i, sample in enumerate(tbar):
             image, target = sample['image'], sample['label']
-            
-            # image = image.permute(0,3,1,2)
-            # target= target.permute(0,3,1,2)
-            # print('after image',image.shape)
-            # print('after target',target.shape)
+        
             image = image.float()
             target = target.float()
             # target = torch.argmax(target, dim=1)
