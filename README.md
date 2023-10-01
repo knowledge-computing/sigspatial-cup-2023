@@ -88,13 +88,16 @@ Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w13.jpg
 Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w14.jpg
 Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w15.jpg
 ```
-- To train model, run `train.py --epoch [NUM_EPOCH] --batch [NUM_BATCH]`
+- To train model, run `train.py --epoch [NUM_EPOCH] --batch [NUM_BATCH] --lr [LEARNING_RATE]`
     - NUM_EPOCH: The number of epoch to train the model
     - NUM_BATCH: The number of batch to train the model
+    - LEARNING_RATE: Add your learning rate 
 - To test model, run `test.py --region [REGION_NAME] --epoch [BEST_EPOCH]`
     - REGION_NAME: The region name where to generate the test prediction mask
     - BEST_EPOCH: The model from the (best) epoch from the training
 - To inference the model, `python test.py --region [REGION_NAME] --epoch [BEST_EPOCH]`
+    - REGION_NAME: The region name where to generate the test prediction mask
+    - BEST_EPOCH: The model from the (best) epoch from the training
 
 **Model Weights**
 You can download the finetuned model weight [from this folder](https://drive.google.com/file/d/1r6O1gCmeIz54xD7BZWTrrDWzo7Vqjedd/view?usp=drive_link).
