@@ -142,9 +142,9 @@ The preprocessed external datasets can be downloaded from [HERE](https://drive.g
     - OUT_GPKG_PATH: the directory of output gpkg files for each region
     
 - To generate a single GPKG file that integrates results from different models, using topo-based and color-based extraction as a reference to postprocess, run `python postprocessing_with_external.py --data_root [DATA_ROOT] --result_name [RESULT_NAME] --data_topo [DATA_TOPO] --data_soil [DATA_SOIL] --sam_dir [SAM_DIR] --dpl_dir [DPL_DIR]`
-    - DATA_ROOT: the data directory path for the provided dataset
+    - DATA_ROOT: the data directory of the competition data
     - RESULT_NAME: the name of the output GPKG file
-    - DATA_TOPO: the directory path to topographic_sink.tif
-    - DATA_SOIL: the directory path to NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif
+    - DATA_TOPO: the path to topographic_sink.tif
+    - DATA_SOIL: the path to NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif
     - SAM_DIR: the directory path of the results from the SAM model
     - DPL_DIR: the directory path of the results from the DeepLab model
