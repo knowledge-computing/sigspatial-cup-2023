@@ -101,7 +101,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 - To install the environment, `pip install -r requirements.txt ` <br>
 
 **How to run** <br>
-- Configuration detail (./models/DeepLabv3Plus/configs/config.yml) <br>
+- Configuration detail ( `.configs/config.yml `) <br>
     - ` config['dataset']['base_path'] ` : the directory path of entire images and masks (train and test). Please make sure that the images are under  `train_images ` and the masks are under  `train_mask`  <br>
     - `config['dataset']['region_txt_base_path']` : the directory path of txt files that contains the list of Positive train set, Negative train set and Test set. Please make sure the name of each txt file : `train_pos.txt`,`train_neg.txt`,`test.txt` <br>
     - `config['dataset']['save_res_path']`: the directory path to save the prediction results <br>
