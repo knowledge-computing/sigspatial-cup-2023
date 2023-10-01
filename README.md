@@ -117,7 +117,7 @@ You can download the model weights [from this folder](https://drive.google.com/d
 
 ### 3.1. Topographic Sink
 **Description**
-We generate the topographic sinks as one of the external data resources from the ArcticDEM. Supraglacial lakes are formed in surface sinks. Therefore, the topographic sinks are potential locations for supraglacial lakes. The process of generating the topographic sinks from ArcticDEM has two steps. 
+We generate the topographic sinks as one of the external data resources from the [ArcticDEM](https://data.pgc.umn.edu/elev/dem/setsm/ArcticDEM/mosaic/latest/100m/). Supraglacial lakes are formed in surface sinks. Therefore, the topographic sinks are potential locations for supraglacial lakes. The process of generating the topographic sinks from ArcticDEM has two steps. 
 First, we employ the open-source WhiteboxToolsTM library to fill the depressions in the ArcticDEM and eliminate flat areas. Second, we generate topographic sinks by subtracting the output of the first step from the original ArcticDEM. Locations, where the subtraction results yield values smaller than zero, represent the topographic sinks.
 
 **How to use**
