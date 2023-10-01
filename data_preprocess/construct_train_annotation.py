@@ -10,7 +10,8 @@ from utils import *
 CAT = {'supercategory':'beverage', 'id':1, 'keypoints':['mean','xmin','x2','x3','xmax','ymin','y2','y3','ymax','cross'], 'name':'lake'}
 IMG_OUTPUT_FORMAT = 'jpg'
 
-def construct_annotations(crop_img_path, crop_size, shift_size):
+
+def construct_annotations(annotations, crop_img_path, crop_size, shift_size):
     index_mapping = {}
     outputs = {'licenses': [], 'info': {}, 'images': [], 'annotations': [], 'categories': [CAT], 
                'img2anno': {}, 'index_mapping': {}}
@@ -92,28 +93,47 @@ def construct_annotations(crop_img_path, crop_size, shift_size):
 
 
 def main():    
-    outputs = construct_annotations(args.crop_img_path, args.crop_size, args.shift_size)
+
+    annotations = convert_geocoord_to_imcoord(args.data_root, transform_file='transform.pgw')
+    outputs = construct_annotations(annotations, args.crop_img_path, args.crop_size, args.shift_size)
     with open(args.output_json, 'w') as f:
         json.dump(outputs, f)
+
+    with open(os.path.join(args.output_json), 'r') as f:
+        data = json.load(f)
+
+    for image in data['images']:
+        image_file_name = image['file_name']
+        canvas = np.zeros((args.crop_size, args.crop_size), np.uint8)    
+        
+        if data['img2anno'].get(image_file_name) is not None:
+            anno_ids = data['img2anno'][image_file_name]
+            for anno_id in anno_ids:
+                anno = data['annotations'][anno_id]
+                poly = np.array(anno['poly']).reshape(-1, 2).astype(int)
+                canvas = cv2.drawContours(canvas, [poly], 0, color=255, thickness=-1)
+    
+        mask_file = os.path.join(args.crop_mask_path, image_file_name)
+        cv2.imwrite(mask_file, canvas)
+    
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_root', type=str, default='../dataset')
+    parser.add_argument('--data_root', type=str, default='../dataset/2023_SIGSPATIAL_Cup_data_files')
     parser.add_argument('--output_path', type=str, default='../dataset/train_crop1024_shift512')
     parser.add_argument('--crop_size', type=int, default=1024)
     parser.add_argument('--shift_size', type=int, default=512)
     args = parser.parse_args()
 
-    args.anno_file = os.path.join(args.data_root, 'annotations.json')
     args.crop_img_path = os.path.join(args.output_path, 'train_images')
     if not os.path.exists(args.crop_img_path):
         os.makedirs(args.crop_img_path)
+    args.crop_mask_path = os.path.join(args.output_path, 'train_mask')
+    if not os.path.exists(args.crop_mask_path):
+        os.makedirs(args.crop_mask_path)
     
-    args.output_json = os.path.join(args.output_path, 'train_poly.json')
-    with open(args.anno_file, 'r') as f:
-        annotations = json.load(f)
-    
+    args.output_json = os.path.join(args.output_path, 'train_poly.json')    
     outputs = main()
     
 

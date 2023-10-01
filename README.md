@@ -23,19 +23,13 @@ Our team proposes an approach to detecting surface lakes by leveraging potential
     - CROP_SIZE: cropped image size, default 1024
     - SHIFT_SIZE: shift size, default 512
 
-- To convert the ground truth polygons in the gpkg files to image patch level polygons, run
+- To convert the ground truth polygons in the gpkg files to image patch masks, run
 `python construct_train_annotation.py --data_root [DATA_ROOT] --output_path [OUTPUT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE]`
     
     - DATA_ROOT: data directory path, e.g., ../dataset/
     - OUTPUT_PATH: output directory path, e.g., ../dataset/train_crop1024_shift512
     - CROP_SIZE: cropped image size, default 1024
     - SHIFT_SIZE: shift size, default 1024 
-    - You need [annotation.json](https://drive.google.com/file/d/188ThxYEoLCgZ8kZb6QMVfCkY-VHPR9x1/view?usp=drive_link) under DATA_ROOT
-
-- To generate the segmentation masks for training, run
-`python construct_segmentation_masks.py --data_path [DATA_ROOT] --crop_size [CROP_SIZE]
-    - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
-    - CROP_SIZE: cropped image size, default 1024
 
 - Generate training samples, run
 `python generate_train_set.py --data_root [DATA_ROOT]
