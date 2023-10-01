@@ -20,7 +20,7 @@ The following content is organized as follows:
 
 ---
 
-## Data Preprocessing
+## 1. Data Preprocessing
 **Directory** `./data_preprocess/`
 
 The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region_images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link), [inference set](https://drive.google.com/file/d/1-MwE2wfwRkB7JJ3chsJdlghAcJ0VbiXC/view?usp=drive_link). You can download these files to avoid the following steps and directly go to [Image Segmentation Models](#2-image-segmentation-models).
@@ -64,12 +64,12 @@ The data preprocssing creates a training dataset from the provided competition d
 
 ---
   
-## Image Segmentation Models 
+## 2. Image Segmentation Models 
 
 ### Description
 We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes), negative samples, and hard negative samples (no lake but having high variability in image color or some detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
 
-### Segment Anything Model
+### 2.1. Segment Anything Model
 **Directory** `./models/SAM/`
 <!-- - We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us.  -->
 
@@ -96,7 +96,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 
 <!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
 
-### DeepLabv3+
+### 2.2. DeepLabv3+
 **Directory** `./models/DeepLabv3Plus/`
 
 **Model Weights** You can download the model weights from [HERE](https://drive.google.com/file/d/10CxDd_ZUCrLriYQ0bNU16XfphITb043q/view?usp=sharing). Please make sure to place the weights under `weight/` directory.
@@ -117,19 +117,19 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 ---
 
 
-## External Data Resources
-### Topographic Sink
+## 3. External Data Resources
+### 3.1. Topographic Sink
 Since lakes are defined by open water of some depth, we use the [ArcticDEM](https://data.pgc.umn.edu/elev/dem/setsm/ArcticDEM/mosaic/latest/100m/) to identify the potential locations for lakes. We generate topographic sinks to postprocess the model output. You can download the file [HERE](https://drive.google.com/file/d/1ZFti7I1OaInSv7wicis-acln5-y__e6p/view?usp=drive_link). 
 
 The process of generating topographic sinks from ArcticDEM has two steps. First, we employ the open-source WhiteboxToolsTM library to fill the depressions in the ArcticDEM and eliminate flat areas. Second, we generate topographic sinks by subtracting the output of the first step from the original ArcticDEM. Locations, where the subtraction results yield values smaller than zero, represent the topographic sinks.
 
 
-### Soil Data
+### 3.2. Soil Data
 We use the soil information to further illiminate the detected lakes that are not located in the glacier area. We use [Northern Circumpolar Soil Carbon Database version 2 (NCSCDv2)](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf), a geospatial database that records the amount of organic carbon storage in soils of the northern circumpolar permafrost region down to a depth of 300 cm. Since the dataset delimited the areas that are covered by glaciers for most times in a year, we use this dataset to identify the glacier area and exclude lakes that are not located on glaciers. You can download the file [HERE](https://drive.google.com/file/d/15RIpVXElhw882SXyvKBltMBRn3lMtsNr/view?usp=drive_link). 
 
 ---
 
-## Data Post-Processing
+## 4. Data Post-Processing
 **Directory** `./data_postprocess/`
 
 After generating the segmentation results from the two models (you can find the results [HERE](https://drive.google.com/drive/u/0/folders/1JAKijqh7vLPZ2_EofWuNO-lb1A-_Bd5f)), our approach first merges and extracts polygons from the segmentation masks respectively, and does some priliminary preprocesses on the polygons. Second, our approach treats the union of topographic sink, color thresholding, and the inverse of soil allocation as lake candidates, and removes all the model-based polygons that are not in the lake candidate. Then our approach compares the SAM-based results and topographic sink on a vector-wise basis. For each lake candidate, our approach only keeps the SAM-based polygon that has the largest overlapping area with the color-thresholding polygon. Lastly, our approach adds model-based polygons (from SAM and DeepLab that were removed) that reach the relative-area criteria of the lake candidates.
@@ -149,7 +149,3 @@ After generating the segmentation results from the two models (you can find the 
     - DATA_SOIL: directory path to NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif
     - SAM_DIR: directory path of the results from the SAM model
     - DPL_DIR: directory path of the results from the DeepLab model
-    
-[comment]: <> (### Without Using External Data Resources)
-[comment]: <> (**How to run**)
-[comment]: <> (- To generate output GPKG from the segmentation results, and do evaluation if the ground truth file exists, run `python run.py --data_root [DATA_ROOT] --result_root [RESULT_ROOT] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --result_name [RESULT_NAME]`)
