@@ -109,6 +109,8 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 - To test the model with the test data, `python main.py -c configs/config.yml --predict_on_test`<br>
 - To predict the model with images `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
 
+**Model Weights**
+You can download the model weights [from this folder](https://drive.google.com/drive/folders/1nyzDF5ELzxYvb89rdOG7vBPvRfO_33a_?usp=sharing). Please make sure to place the weights under the `weight/` directory. <br> 
 ## 3. External Data Resources
 **Directory** `./external_datasets/`
 
