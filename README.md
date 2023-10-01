@@ -26,9 +26,11 @@ The code and result for 12th SIGSPATIAL Cup competition (GISCUP 2023) [https://s
 **Directory** `./models/SAM`
 
 **Description** 
-We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us. We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. Since the ratio of lake and non-lake regions in the training data are skewed, we further conducted the positive (lake) and negative (non-lake) balancing where each input image patch has 50% chance to contain lake. 
+We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us. We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. Since the ratio of lake and non-lake regions in the training data are skewed, we consider the positive (lake) and negative (non-lake) samples' ratio in the training samples (Weighted Random Sampler).
 
-**Environment Setup**
+**Environment Setup** 
+The model is trained with python 3.11 and CUDA 11.4. To install the environment,
+
 `pip install -r environment.yml`
 
 **How to run**
@@ -36,14 +38,15 @@ We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything
 - To train model, run `train.py`
 - To test model, see `test.py`
   
-- Please refer more detail on (GitHub repository [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake))
+- Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
 
 ### DeepLabv3Plus
 **Directory** `./models/DeepLabv3Plus`
 
 **Environment Setup**
 <br>
-The model is trained with python 3.8 and CUDA 11.3 <br>
+The model is trained with python 3.8 and CUDA 11.3. To install the environment,
+
 `pip install -r requirements.txt `
 
 **Description** <br>
