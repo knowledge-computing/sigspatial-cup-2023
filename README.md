@@ -6,24 +6,23 @@ Our team proposes an emsembled approach that leverages two machine learning mode
 
 ## Results for Submission
 
-A link to the generated GPKG is [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg).
-
+Link to the submission GPKG: [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg).
 
 The following content is organized as follows:
 1. <a href="#1-data-preprocessing">Data Preprocessing</a>
 2. <a href="#2-image-segmentation-models">Image Segmentation Models</a>
     * 2.1. <a href="#21-segment-anything-model">Segment Anything Model</a>
-    * 2.2. <a href="#22-deeplabv3">DeepLabv3Plus</a>
+    * 2.2. <a href="#22-deeplabv3">DeepLabv3+</a>
 3. <a href="#3-external-data-resources">External Data Resources</a>
     * 3.1. <a href="#31-topographic-sink">Topographic Sink</a>
-    * 3.2. <a href="#32-soil">Soil</a>
-4. <a href="#4-data-post-processing">Data Post-Processing</a>
+    * 3.2. <a href="#32-soil">Soil Data</a>
+4. <a href="#4-data-post-processing">Data Postprocessing</a>
 
 ---
 
 ## Data Preprocessing
 **Directory** `./data_preprocess/`
-The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region_images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link), [inference set](https://drive.google.com/file/d/1-MwE2wfwRkB7JJ3chsJdlghAcJ0VbiXC/view?usp=drive_link). You can download these files to avoid the following steps and [train models](#Image-Segmentation-Models).
+The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region_images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link), [inference set](https://drive.google.com/file/d/1-MwE2wfwRkB7JJ3chsJdlghAcJ0VbiXC/view?usp=drive_link). You can download these files to avoid the following steps and directly go to [Image Segmentation Models](#2-image-segmentation-models).
 
 **How to run**
 
@@ -65,28 +64,28 @@ The data preprocssing creates a training dataset from the provided competition d
 ## Image Segmentation Models 
 
 ### Description
-We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes) and hard negative samples (no lake but having high variability in image color or some detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/)) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
+We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes), negative samples, and hard negative samples (no lake but having high variability in image color or some detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/)) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
 
 ### Segment Anything Model
 **Directory** `./models/SAM/`
 <!-- - We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us.  -->
 
-**Model Weights**
-    - You can download the model weights from [HERE](https://drive.google.com/file/d/1r6O1gCmeIz54xD7BZWTrrDWzo7Vqjedd/view).
+**Model Weights** You can download the model weights from [HERE](https://drive.google.com/file/d/1r6O1gCmeIz54xD7BZWTrrDWzo7Vqjedd/view).
 
 **Environment Setup** 
-    - The model is trained with python 3.11 and CUDA 11.3
-    - To install the environment, `cd ./models/SAM/` and `pip install -r environment.yml`
+- The model is trained with python 3.11 and CUDA 11.3
+- To install the environment, `cd ./models/SAM/` and `pip install -r environment.yml`
 
 **How to run**
 
-- To train the model, run `train.py --epoch [NUM_EPOCH] --batch [NUM_BATCH]`
+- To train the model, run `train.py --epoch [NUM_EPOCH] --batch [NUM_BATCH] --img_dir [IMAGE_PATH]`
     - NUM_EPOCH: The maximum number of training epoches 
     - NUM_BATCH: Batch size
-- To test the model, run `test.py --region [REGION_NAME] --epoch [BEST_EPOCH]`
-    - Example
+    - IMAGE_PATH: the root directory of image and mask folder
+- To test the model, run `test.py --region [REGION_NAME] --epoch [BEST_EPOCH] --img_dir [IMAGE_PATH]`
     - REGION_NAME: The region name to generate segmentation masks
     - BEST_EPOCH: The model from the (best) epoch from the training
+    - IMAGE_PATH: the root directory of image and mask folder
 - To inference given images, run `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br><br>
 
   
@@ -96,16 +95,15 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 ### DeepLabv3+
 **Directory** `./models/DeepLabv3Plus/`
 
-**Model Weights**
-    - You can download the model weights from [HERE](https://drive.google.com/file/d/10CxDd_ZUCrLriYQ0bNU16XfphITb043q/view?usp=sharing). Please make sure to place the weights under the `weight/` directory.
+**Model Weights** You can download the model weights from [HERE](https://drive.google.com/file/d/10CxDd_ZUCrLriYQ0bNU16XfphITb043q/view?usp=sharing). Please make sure to place the weights under `weight/` directory.
 
 **Environment Setup** <br>
-    - The model is trained with python 3.8 and CUDA 11.3
-    - To install the environment in conda, run `conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge`, then `pip install -r requirements.txt ` <br>
+- The model is trained with python 3.8 and CUDA 11.3
+- To install the environment in conda, run `conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge`, then `pip install -r requirements.txt ` <br>
 
 **How to run** <br>
 - To modify configuration file ./configs/config.yml <br>
-    - `base_path'` : the root directory of image and mask folder. <br> 
+    - `base_path'` : the root directory of image and mask folder <br> 
     - `region_txt_base_path` : the directory of txt files indicating positive and negative samples, named as `train_pos.txt`, `train_neg.txt`, `test.txt` (if exists) <br>
     - `save_res_path`: the directory to the segmentation results <br><br>
 - To train the model, run `python main.py -c configs/config.yml --train`<br>
@@ -129,10 +127,10 @@ We use the soil information to further illiminate the detected lakes that are no
 **Directory** `./data_postprocess/`
 
 **Description**
-After generating the segmentation results from the two models, our approach first merges and extracts polygons from the segmentation masks respectively, and does some priliminary preprocesses on the polygons. Second, our approach treats the union of topographic sink, color thresholding, and the inverse of soil allocation as lake candidates, and removes all the model-based polygons that are not in the lake candidate. Then our approach compares the SAM-based results and topographic sink on a vector-wise basis. For each lake candidate, our approach only keeps the SAM-based polygon that has the largest overlapping area with the color-thresholding polygon. Lastly, our approach adds model-based polygons (from SAM and DeepLab that were removed) that reach the relative-area criteria of the lake candidates.
+After generating the segmentation results from the two models (you can find the results [HERE](https://drive.google.com/drive/u/0/folders/1JAKijqh7vLPZ2_EofWuNO-lb1A-_Bd5f)), our approach first merges and extracts polygons from the segmentation masks respectively, and does some priliminary preprocesses on the polygons. Second, our approach treats the union of topographic sink, color thresholding, and the inverse of soil allocation as lake candidates, and removes all the model-based polygons that are not in the lake candidate. Then our approach compares the SAM-based results and topographic sink on a vector-wise basis. For each lake candidate, our approach only keeps the SAM-based polygon that has the largest overlapping area with the color-thresholding polygon. Lastly, our approach adds model-based polygons (from SAM and DeepLab that were removed) that reach the relative-area criteria of the lake candidates.
 
 **How to run**
-- To merge segmentation results from image patches, run `python postprocessing_merge.py --data_root [DATA_ROOT] --result_path [RESULT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --out_gpkg_path [OUT_GPKG_PATH]
+- To merge segmentation results from image patches, run `python postprocessing_merge.py --data_root [DATA_ROOT] --result_path [RESULT_PATH] --crop_size [CROP_SIZE] --shift_size [SHIFT_SIZE] --out_gpkg_path [OUT_GPKG_PATH]`
     - DATA_ROOT: data directory of the competition data
     - RESULT_PATH: the segmentation result path, e.g., ../results/deeplabv3p_update/2019-08-25_29_r5
     - CROP_SIZE: cropped image size, default 1024
