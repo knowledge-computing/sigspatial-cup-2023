@@ -85,9 +85,10 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 - To test model, run `test.py --region [REGION_NAME] --epoch [BEST_EPOCH]`
     - REGION_NAME: The region name where to generate the test prediction mask
     - BEST_EPOCH: The model from the (best) epoch from the training
-  
+- To inference the model, `python test.py --region [REGION_NAME] --epoch [BEST_EPOCH]`
+
 **Model Weights**
-    Please provide the model weights and running examples for testing
+You can download the finetuned model weight [from this folder](https://drive.google.com/file/d/1r6O1gCmeIz54xD7BZWTrrDWzo7Vqjedd/view?usp=drive_link).
 
 <!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
 
