@@ -95,12 +95,12 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 **Directory** <br> 
 `./models/DeepLabv3Plus/`<br><br>
 
-**Environment Setup** <br>
+**Environment Setup** <br><br>
 - The model is trained with python 3.8 and CUDA 11.3
 - `conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge`
 - To install the environment, `pip install -r requirements.txt ` <br>
 
-**How to run** <br>
+**How to run** <br><br>
 - Configuration detail (./configs/config.yml) <br>
     - ` config['dataset']['base_path'] ` : the directory path of entire images and masks (train and test). Please make sure that the images are under  `train_images ` and the masks are under  `train_mask`  <br>
     - `config['dataset']['region_txt_base_path']` : the directory path of txt files that contains the list of Positive train set, Negative train set and Test set. Please make sure the name of each txt file : `train_pos.txt`,`train_neg.txt`,`test.txt` <br>
@@ -110,7 +110,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 - To test the model with the test data, `python main.py -c configs/config.yml --predict_on_test`<br>
 - To inference the model with images `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
 
-**Model Weights** <br> 
+**Model Weights** <br><br> 
 You can download the model weights [from this folder](https://drive.google.com/drive/folders/1nyzDF5ELzxYvb89rdOG7vBPvRfO_33a_?usp=sharing). Please make sure to place the weights under the `weight/` directory. <br> 
 ## 3. External Data Resources
 **Directory** `./external_datasets/`
