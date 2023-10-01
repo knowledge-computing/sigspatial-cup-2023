@@ -57,7 +57,7 @@ def main(args):
         os.makedirs(output_dir)
 
     target_size = 1024
-    test_dir = f"/home/yaoyi/shared/sigspatial/target_crop1024_shift512/test_images"
+    test_dir = args.img_dir
 
     for img_name in test_list:
 
@@ -75,6 +75,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--region', type=str, default='Greenland26X_22W_Sentinel2_2019-08-25_29_r6')
     parser.add_argument('--epoch', type=int, default=8)
+    parser.add_argument('--img_dir', type=str, default="/home/yaoyi/shared/sigspatial/target_crop1024_shift512/test_images")
     args = parser.parse_args()
     
     
