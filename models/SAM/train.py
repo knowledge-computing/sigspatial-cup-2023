@@ -150,7 +150,7 @@ def main(args):
             param.requires_grad_(False)
 
     # Note: Hyperparameter tuning could improve performance here
-    optimizer = Adam(model.mask_decoder.parameters(), lr=5e-6, weight_decay=0)
+    optimizer = Adam(model.mask_decoder.parameters(), lr=args.lr, weight_decay=0)
 
     seg_loss = monai.losses.DiceCELoss(sigmoid=True, squared_pred=True, reduction='mean')
 
@@ -189,6 +189,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--epoch', type=int, default=10)
     parser.add_argument('--batch', type=int, default=8)
+    parser.add_argument('--lr', type=float, default=5e-6)
+    
     args = parser.parse_args()
     
     
