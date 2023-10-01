@@ -20,7 +20,7 @@ The content is organized as follows:
 ## 1. Data Preprocessing
 **Directory** `./data_preprocess/`
 
-The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link) (region_images), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link) (train_crop1024_shift512), [inference set](https://drive.google.com/file/d/1-MwE2wfwRkB7JJ3chsJdlghAcJ0VbiXC/view?usp=drive_link) (target_crop1024_shift512). You can download these datasets and organize them as [THIS FOLDER](https://drive.google.com/drive/folders/1hYj5GVdE-5TdEzVwY4o48gzScOv0iIZI?usp=drive_link). You can then avoid the following steps and directly go to [Image Segmentation Models](#2-image-segmentation-models). 
+The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link) (region_images), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link) (train_crop1024_shift512), [inference set](https://drive.google.com/drive/folders/1zII5C1vFuv01TJjw_bfx0lGPg8cB8fUI?usp=drive_link) (target_crop1024_shift512). You can download these datasets and organize them as [THIS FOLDER](https://drive.google.com/drive/folders/1hYj5GVdE-5TdEzVwY4o48gzScOv0iIZI?usp=drive_link). You can then avoid the following steps and directly go to [Image Segmentation Models](#2-image-segmentation-models). 
 
 **How to run**
 
