@@ -43,7 +43,7 @@ We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything
 
 **Environment Setup**
 <br>
-The model is trained with python 3.8 and CUDA 11.3 
+The model is trained with python 3.8 and CUDA 11.3 <br>
 `pip install -r requirements.txt `
 
 **Description** 
