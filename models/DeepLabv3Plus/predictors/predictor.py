@@ -37,7 +37,6 @@ class Predictor():
         self.categories_dict_rev = {v: k for k, v in self.categories_dict.items()}
         
         self.model = self.load_model()
-        self.train_loader, self.val_loader, self.test_loader, self.nclass = initialize_data_loader(config)
 
         self.num_classes = self.config['network']['num_classes']
         self.evaluator = Evaluator(self.num_classes)
@@ -63,7 +62,7 @@ class Predictor():
 
     def inference_on_test_set(self):
         print("inference on test set")
-
+        self.train_loader, self.val_loader, self.test_loader, self.nclass = initialize_data_loader(config)
         self.model.eval()
         self.evaluator.reset()
         tbar = tqdm(self.test_loader, desc='\r')
