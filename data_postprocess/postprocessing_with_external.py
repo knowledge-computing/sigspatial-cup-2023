@@ -51,7 +51,7 @@ def preprocessing_delineation(path_to_source):
 
     for fid in range(1, 7):
         image_shape.append([])
-    timestamp = ['2019-06-03_05.tif', '2019-06-19_20.tif', '2019-07-31_25-001.tif', '2019-08-25_29-002.tif']
+    timestamp = ['2019-06-03_05.tif', '2019-06-19_20.tif', '2019-07-31_25.tif', '2019-08-25_29.tif']
 
     for fid in range(1, 7):
         Vector = gpd.read_file(vector_fn)
@@ -437,6 +437,7 @@ def topo_to_gpkg(path_to_source, path_to_topo):
     base_img[base_img < 0] = 255
     base_img[base_img == None] = 0
 
+
     tifffile.imwrite('Intermediate/External/topographic_sink_reversed.tif', base_img)
 
     with rasterio.open(path_to_topo) as naip:
@@ -489,9 +490,6 @@ def topo_to_gpkg(path_to_source, path_to_topo):
 
 
 def soil_to_gpkg(path_to_source, path_to_soil):
-    path_to_soil = 'NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif'
-    path_to_source = 'Source/Authority/'
-
 
     base_img = tifffile.imread(path_to_soil)
     base_img[base_img > 100] = 0
@@ -535,7 +533,7 @@ def soil_to_gpkg(path_to_source, path_to_soil):
 
 
     topo_gpkg = 'Intermediate/External/soil.gpkg'
-    region_gpkg = path_to_source+'lakes_regions.gpkg'
+    region_gpkg = path_to_source + 'lakes_regions.gpkg'
 
     layer1 = gpd.read_file(region_gpkg)
     layer2 = gpd.read_file(topo_gpkg)
@@ -571,13 +569,16 @@ def soil_to_gpkg(path_to_source, path_to_soil):
 
 
 
-def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
+def postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_gpkg):
     import warnings
     warnings.filterwarnings("ignore")
     
     gpkg_timestamp = ['2019-06-03_05', '2019-06-19_20', '2019-07-31_25', '2019-08-25_29']
     if not os.path.exists('Intermediate/Output'):
         os.makedirs('Intermediate/Output')
+
+    TP1,TP2,TP3,FP1,FP2,FP3,FN1,FN2,FN3 = [0]*9
+    output_gpkgs = []
 
     for fid in range(1, 7):
         for tid in range(1, 5):
@@ -608,6 +609,7 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
             color_gpkg = 'Intermediate/Postprocessing_Output/color_based_polygon.gpkg'
             soil_gpkg = 'Intermediate/External/soil_based_polygon.gpkg'
 
+            print(image_stamp + targeted_time +'_r'+ str(fid))
 
             if os.path.isfile(topo_gpkg) == False:
                 print(topo_gpkg + '... Topo-based File not exist, proceed with preprocessing first if tif file exists...')
@@ -619,10 +621,10 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
                 print(soil_gpkg + '... Soil-based File not exist, proceed with preprocessing first if tif file exists...')
                 continue
             if os.path.isfile(model_gpkg) == False:
-                print(model_gpkg + '... File for 1st model not exist...')
+                print(model_gpkg + '... SAM File not exist...')
                 continue
             if os.path.isfile(model_gpkg_2) == False:
-                print(model_gpkg_2 + '... File for 2nd model not exist...')
+                print(model_gpkg_2 + '... DeepLab File not exist...')
                 continue
             
 
@@ -642,6 +644,7 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
             model_polygon2['m2_id'] = range(1, model_polygon2.shape[0]+1)
             model_polygon2['m2_area'] = model_polygon2['geometry'].area/10**6
 
+            # this can be adjusted
             if model_polygon.shape[0] == 0:
                 layer1 = gpd.read_file(model_gpkg_2)
                 model_polygon = layer1[(layer1['image']==target_stamp) & (layer1['region_num']==targeted_region)]
@@ -658,8 +661,6 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
             color_polygon['c_area'] = color_polygon['geometry'].area/10**6
 
             
-
-
             overlay_polygon = gpd.overlay(model_polygon, topo_polygon, how='intersection', keep_geom_type=False)
             overlay_polygon['overlap_area'] = overlay_polygon['geometry'].area/10**6
 
@@ -672,7 +673,6 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
             #print(overlay_polygon2)
             #overlay_polygon2.to_file('Intermediate/External/model_color_polygon_for_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'.gpkg', layer='polygon', driver='GPKG')
             
-
             processed_polygon = gpd.GeoDataFrame.copy(model_polygon)
             dropped_polygon = gpd.GeoDataFrame(columns=['image', 'region_num', 'geometry', 'm_id', 'm_area',], crs=processed_polygon.crs) #geometry='feature',
 
@@ -777,15 +777,25 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
 
             processed_polygon.to_file('Intermediate/Output/postprocessed_polygons_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'.gpkg', layer='polygon', driver='GPKG')
 
-            print(giscup_evaluation_f1_per_map(targeted_time, targeted_region, 'Source/Authority/lake_polygons_training.gpkg' , model_gpkg))
-            print(giscup_evaluation_f1_per_map(targeted_time, targeted_region, 'Source/Authority/lake_polygons_training.gpkg' , model_gpkg_2))
-            print(giscup_evaluation_f1_per_map(targeted_time, targeted_region, 'Source/Authority/lake_polygons_training.gpkg' , 'Intermediate/Output/postprocessed_polygons_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'.gpkg'))
+            tp1, fp1, fn1, f1 = giscup_evaluation_f1_per_map(targeted_time, targeted_region, os.path.join(path_to_source, 'lake_polygons_training.gpkg'), model_gpkg_2)
+            tp2, fp2, fn2, f2 = giscup_evaluation_f1_per_map(targeted_time, targeted_region, os.path.join(path_to_source, 'lake_polygons_training.gpkg'), model_gpkg)
+            tp3, fp3, fn3, f3 = giscup_evaluation_f1_per_map(targeted_time, targeted_region, os.path.join(path_to_source, 'lake_polygons_training.gpkg'), 'Intermediate/Output/postprocessed_polygons_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'.gpkg')
+            print(tp1, fp1, fn1, f1)
+            print(tp2, fp2, fn2, f2)
+            print(tp3, fp3, fn3, f3)
+            TP1 += tp1
+            FP1 += fp1
+            FN1 += fn1
+            TP2 += tp2
+            FP2 += fp2
+            FN2 += fn2
+            TP3 += tp3
+            FP3 += fp3
+            FN3 += fn3
 
             processed_polygon = processed_polygon.drop('p_id', axis=1)
             processed_polygon = processed_polygon.drop('m_id', axis=1)
             processed_polygon = processed_polygon.drop('m_area', axis=1)
-            processed_polygon = processed_polygon.drop('m2_id', axis=1)
-            processed_polygon = processed_polygon.drop('m2_area', axis=1)
 
             if not os.path.isfile(output_gpkg):
                 processed_polygon.to_file(output_gpkg, driver="GPKG")
@@ -794,7 +804,25 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
                 submission = original_submission.copy()
                 submission = gpd.GeoDataFrame(pd.concat([submission, processed_polygon], ignore_index=True))
                 submission.to_file(output_gpkg, driver="GPKG")
+                
+            output_gpkgs.append(output_gpkg)
 
+    F1 = 0.0
+    if (TP1+FP1+FN1) > 0:
+        F1= 2*TP1/(2*TP1 + FP1 + FN1)
+    print(TP1, FP1, FN1, F1)
+    F2 = 0.0
+    if (TP2+FP2+FN2) > 0:
+        F2= 2*TP2/(2*TP2 + FP2 + FN2)
+    print(TP2, FP2, FN2, F2)
+    F3 = 0.0
+    if (TP3+FP3+FN3) > 0:
+        F3 = 2*TP3/(2*TP3 + FP3 + FN3)
+    print(TP3, FP3, FN3, F3)
+
+
+    
+        
 
 def sweeper():
     dir_name = 'Intermediate'
@@ -825,33 +853,32 @@ def sweeper():
 
 def preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil):
     runningtime_start = datetime.now()
-    # some preprocessing for color-based extraction
-    initialization_dirs()
-    image_shape = preprocessing_delineation(path_to_source)
-    region_extent, region_projection = preprocessing_boundary(path_to_source, image_shape)
-    preprocessing_visualization(path_to_source, image_shape, region_extent, region_projection)
-    print('Finish preprocessing for color-based extraction......', datetime.now()-runningtime_start)
+    # # some preprocessing for color-based extraction
+    # initialization_dirs()
+    # image_shape = preprocessing_delineation(path_to_source)
+    # region_extent, region_projection = preprocessing_boundary(path_to_source, image_shape)
+    # preprocessing_visualization(path_to_source, image_shape, region_extent, region_projection)
+    # print('Finish preprocessing for color-based extraction......', datetime.now()-runningtime_start)
 
-    # gpkg for color-based polygon
-    color_based_extraction()
-    print('Finish conducting color-based extraction......', datetime.now()-runningtime_start)
-    png_to_gpkg()
+    # # gpkg for color-based polygon
+    # color_based_extraction()
+    # print('Finish conducting color-based extraction......', datetime.now()-runningtime_start)
+    # png_to_gpkg()
 
-    # gpkg for topo-based polygon
-    topo_to_gpkg(path_to_source, path_to_topo)
-
-    # gpkg for soil-based polygon
-    soil_to_gpkg(path_to_source, path_to_soil)
-    print('Finish preparing for postprocessing......', datetime.now()-runningtime_start)
+    # # gpkg for topo-based polygon
+    # topo_to_gpkg(path_to_source, path_to_topo)
+    # # gpkg for soil-based polygon
+    # soil_to_gpkg(path_to_source, path_to_soil)
+    # print('Finish preparing for postprocessing......', datetime.now()-runningtime_start)
     sweeper()
 
 
 
 def postprocessing_with_external(path_to_source, path_to_topo, path_to_soil, path_to_model_sam, path_to_model_lab, output_gpkg):
 
-    preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil)
-    sweeper()
-    postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg)
+    # preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil)
+    # sweeper()
+    postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_gpkg)
 
 
 
@@ -866,18 +893,15 @@ def main():
     postprocessing_with_external(path_to_source, path_to_topo, path_to_soil, path_to_model_sam, path_to_model_lab, output_gpkg)
     #postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg)
 
-
-
-
 import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_root', type=str, default='Source/Authority/')
-    parser.add_argument('--result_name', type=str, default='postprocessed_output.gpkg')
-    parser.add_argument('--data_topo', type=str, default='topographic_sink.tif')
-    parser.add_argument('--data_soil', type=str, default='NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif')
-    parser.add_argument('--sam_dir', type=str, default='Model_Based/regional_gkpg/')
-    parser.add_argument('--dpl_dir', type=str, default='Model_Based/dl3p_leeje_12_results/')
+    parser.add_argument('--data_root', type=str, default='../dataset/2023_SIGSPATIAL_Cup_data_files/')
+    parser.add_argument('--result_name', type=str, default='../results/postprocessed_output.gpkg')
+    parser.add_argument('--data_topo', type=str, default='../dataset/2023_SIGSPATIAL_Cup_data_files/topographic_sink.tif')
+    parser.add_argument('--data_soil', type=str, default='../dataset/2023_SIGSPATIAL_Cup_data_files/NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif')
+    parser.add_argument('--sam_dir', type=str, default='../results/sam_pos_hardneg_2/')
+    parser.add_argument('--dpl_dir', type=str, default='../results/dl3p/')
 
 
     args = parser.parse_args()

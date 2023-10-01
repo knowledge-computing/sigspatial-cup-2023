@@ -126,7 +126,7 @@ def split_poly_by_narrow_streams(poly, kernel_size=7):
         return out_polys
 
 
-def split_polys_by_narrow_streams(polys, kernel_size=3, image_size=(512, 512)):
+def split_polys_by_narrow_streams(polys, kernel_size=3, image_size=(1024, 1024)):
     remove_polys = []
     kernel = np.ones((kernel_size, kernel_size), np.uint8)
     for poly in polys:
@@ -243,7 +243,7 @@ def merge(test_region, data_path, crop_size, shift_size, rock_mask_path=None):
     count = 0
     for k, v in polys_dict.items():
         count += len(v)
-    # print('# polygons before merging', count)
+    print('# polygons before merging', count)
 
     if count < 500:
         for k, v in polys_dict.items():
@@ -251,12 +251,13 @@ def merge(test_region, data_path, crop_size, shift_size, rock_mask_path=None):
         out_polys = remove_duplicates(out_polys)
 
     else:
-        for seg_file in seg_files:    
+        for seg_file in seg_files:  
+
             hdx, wdx = extract_hw_index(seg_file)
             if hdx % 2 > 0 or wdx % 2 > 0: continue;
     
             cur_polys = polys_dict[seg_file]
-            if len(cur_polys) < 1: continue;
+            # if len(cur_polys) < 1: continue;
 
             bbox = np.array([[0,0],[0,crop_size],[crop_size,crop_size],[crop_size,0]])
             bbox = convert_coordinates([bbox], hdx, wdx, shift_size)[0]
@@ -308,6 +309,9 @@ def merge(test_region, data_path, crop_size, shift_size, rock_mask_path=None):
 
 
 def load_manual_mask(mask_path):
+    if not os.path.exists(mask_path):
+        return None
+        
     data = pd.read_csv(mask_path)
     def parser(anc):
         pts = anc.split('points=')[1][1:-11]
