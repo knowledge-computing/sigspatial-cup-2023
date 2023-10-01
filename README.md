@@ -73,7 +73,7 @@ The model is trained with python 3.11 and CUDA 11.4.
   
 - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
 
-### DeepLabv3Plus<br>
+### DeepLabv3Plus
 **Directory** <br> 
 `./models/DeepLabv3Plus/`<br><br>
 **Description** <br>
