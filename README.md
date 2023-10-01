@@ -6,7 +6,7 @@ Our team proposes an emsembled approach that leverages two machine learning mode
 
 ## Results for Submission
 
-Link to the submission GPKG: [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg).
+Link to the submission GPKG: [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg)
 
 The following content is organized as follows:
 1. <a href="#1-data-preprocessing">Data Preprocessing</a>
@@ -59,14 +59,15 @@ The data preprocssing creates a training dataset from the provided competition d
 `python generate_train_test_set.py --data_root [DATA_ROOT]
   
     - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
-    - You need [hard_neg_images.json](https://drive.google.com/file/d/13UDQGBR-KEjZ6sIOxSZwqKog6cjwuSGd/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/1emtgoMzDUkeFf2RAOzmHjeSO7uX5zZ9e/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/19XkGd3ExaY5r9olrQakA311QMauGah-8/view?usp=drive_link) under DATA_PATH
+    - You need [hard_neg_images.json](https://drive.google.com/file/d/13UDQGBR-KEjZ6sIOxSZwqKog6cjwuSGd/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/1emtgoMzDUkeFf2RAOzmHjeSO7uX5zZ9e/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/19XkGd3ExaY5r9olrQakA311QMauGah-8/view?usp=drive_link) under DATA_PATH <br>
+
 
 ---
   
 ## Image Segmentation Models 
 
 ### Description
-We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes), negative samples, and hard negative samples (no lake but having high variability in image color or some detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/)) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
+We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes), negative samples, and hard negative samples (no lake but having high variability in image color or some detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
 
 ### Segment Anything Model
 **Directory** `./models/SAM/`
@@ -76,7 +77,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 
 **Environment Setup** 
 - The model is trained with python 3.11 and CUDA 11.3
-- To install the environment, `cd ./models/SAM/` and `pip install -r environment.yml`
+- To install the environment, `pip install -r environment.yml`
 
 **How to run**
 
@@ -91,9 +92,6 @@ We formulate the problem as a pixel-level binary-class classification problem, w
     - REGION: The region name to generate segmentation masks
     - EPOCH: The model from the epoch from the training
     - IMG_DIR: the directory of testing images
-<br>
-
-  
 
 <!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
 
@@ -113,7 +111,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
     - `save_res_path`: the directory to the segmentation results <br><br>
 - To train, run `python main.py -c configs/config.yml --train`<br>
 - To test, run `python main.py -c configs/config.yml --predict_on_test`<br>
-- To inference given images, run `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br><br>
+- To inference given images, run `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
 
 ---
 
@@ -133,7 +131,6 @@ We use the soil information to further illiminate the detected lakes that are no
 ## Data Post-Processing
 **Directory** `./data_postprocess/`
 
-**Description**
 After generating the segmentation results from the two models (you can find the results [HERE](https://drive.google.com/drive/u/0/folders/1JAKijqh7vLPZ2_EofWuNO-lb1A-_Bd5f)), our approach first merges and extracts polygons from the segmentation masks respectively, and does some priliminary preprocesses on the polygons. Second, our approach treats the union of topographic sink, color thresholding, and the inverse of soil allocation as lake candidates, and removes all the model-based polygons that are not in the lake candidate. Then our approach compares the SAM-based results and topographic sink on a vector-wise basis. For each lake candidate, our approach only keeps the SAM-based polygon that has the largest overlapping area with the color-thresholding polygon. Lastly, our approach adds model-based polygons (from SAM and DeepLab that were removed) that reach the relative-area criteria of the lake candidates.
 
 **How to run**
