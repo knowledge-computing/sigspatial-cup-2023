@@ -63,7 +63,7 @@ We generate the topographic sinks as one of the external data resources from the
 First, we employ the open-source WhiteboxToolsTM library to fill the depressions in the ArcticDEM and eliminate flat areas. Second, we generate topographic sinks by subtracting the output of the first step from the original ArcticDEM. Locations, where the subtraction results yield values smaller than zero, represent the topographic sinks.
 
 **How to use**
-- 
+- TBA
 
 ### Soil
 **Description**
