@@ -36,7 +36,7 @@ The model is trained with python 3.11 and CUDA 11.4. To install the environment,
 **How to run**
 
 - To train model, run `train.py`
-- To test model, see `test.py`
+- To test model, run `test.py`
   
 - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
 
