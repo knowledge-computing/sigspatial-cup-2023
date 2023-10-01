@@ -26,15 +26,15 @@ Our team proposes an approach to detecting surface lakes by leveraging potential
 
 ## Image Segmentation Models 
 ### Segment Anything Model
-**Directory** `./models/SAM`
+**Directory** `./models/SAM/`
 
 **Description** 
 We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us. We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. Since the ratio of lake and non-lake regions in the training data are skewed, we consider the positive (lake) and negative (non-lake) samples' ratio in the training samples (Weighted Random Sampler).
 
 **Environment Setup** 
-The model is trained with python 3.11 and CUDA 11.4. To install the environment,
 
-`pip install -r environment.yml`
+The model is trained with python 3.11 and CUDA 11.4.
+- To install the environment, `pip install -r environment.yml`
 
 **How to run**
 
@@ -44,28 +44,33 @@ The model is trained with python 3.11 and CUDA 11.4. To install the environment,
 - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake)
 
 ### DeepLabv3Plus
-**Directory** `./models/DeepLabv3Plus`
+**Directory** `./models/DeepLabv3Plus/`
 
 **Environment Setup**
-<br>
-The model is trained with python 3.8 and CUDA 11.3. To install the environment,
 
-`pip install -r requirements.txt `
+The model is trained with python 3.8 and CUDA 11.3. 
+- To install the environment, `pip install -r requirements.txt `
 
 **Description** <br>
 We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) on the glacier training data. The model applied Weighted Random Sampler to address the data imbalance between pixels with Lake and pixels with Non-Lake. The input mask consists of 0 (Non-Lake) and 1(Lake). 
 
 ## External Data Resources
+**Directory** `./external_datasets/`
+
 ### Topographic Sink
 **Description**
 We generate the topographic sinks as one of the external data resources from the ArcticDEM. Supraglacial lakes are formed in surface sinks. Therefore, the topographic sinks are potential locations for supraglacial lakes. The process of generating the topographic sinks from ArcticDEM has two steps. 
 First, we employ the open-source WhiteboxToolsTM library to fill the depressions in the ArcticDEM and eliminate flat areas. Second, we generate topographic sinks by subtracting the output of the first step from the original ArcticDEM. Locations, where the subtraction results yield values smaller than zero, represent the topographic sinks.
 
+**How to use**
+- 
+
 ### Soil
 **Description**
-We use the NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif from [Northern Circumpolar Soil Carbon Database version 2 (NCSCDv2)](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf). 
-NCSCDv2 is a geospatial database that records the amount of organic carbon storage in soils of the northern circumpolar permafrost region down to a depth of 300 cm. Since the dataset delimited the areas that are covered by glaciers for most times in a year, we use this dataset to identify the glacier area and exclude lakes that are not located on glaciers.
+We use [Northern Circumpolar Soil Carbon Database version 2 (NCSCDv2)](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf), a geospatial database that records the amount of organic carbon storage in soils of the northern circumpolar permafrost region down to a depth of 300 cm. Since the dataset delimited the areas that are covered by glaciers for most times in a year, we use this dataset to identify the glacier area and exclude lakes that are not located on glaciers.
 
+**How to use**
+- Please download NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif from [NCSCDv2](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf) and place it in `./external_datasets/`. 
 
 ## Data Post-Processing
 **Directory** `./data_postprocess/`
