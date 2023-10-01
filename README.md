@@ -1,11 +1,9 @@
 # ACM SIGSPATIAL Cup 2023
 The code and result for 12th SIGSPATIAL Cup (GISCUP 2023) [https://sigspatial2023.sigspatial.org/giscup/index.html](https://sigspatial2023.sigspatial.org/giscup/index.html)
 
-The goal is to detect supraglacial lakes on the Greenland ice sheet from satellite imagery. 
-Our team proposes an emsembled approach that leverages two machine learning models, computer vision techniques, and external data (e.g., topographic sinks, soil) to automatically detecting surface lakes.
+The goal is to detect supraglacial lakes on the Greenland ice sheet from satellite imagery. Our team proposes an ensembled approach that leverages two machine learning models, computer vision techniques, and external data (e.g., topographic sinks, soil) to automatically detect surface lakes.
 
 ## Results for Submission
-
 Link to the submission GPKG: [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg)
 
 The following content is organized as follows:
