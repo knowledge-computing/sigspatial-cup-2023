@@ -439,7 +439,7 @@ def topo_to_gpkg(path_to_source, path_to_topo):
 
     tifffile.imwrite('Intermediate/External/topographic_sink_reversed.tif', base_img)
 
-    with rasterio.open('topographic_sink.tif') as naip:
+    with rasterio.open(path_to_topo) as naip:
         with rasterio.open(
             'Intermediate/External/topographic_sink_reversed_v2.tif',
             'w',
@@ -488,6 +488,89 @@ def topo_to_gpkg(path_to_source, path_to_topo):
     # 13.0s
 
 
+def soil_to_gpkg(path_to_source, path_to_soil):
+    path_to_soil = 'NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif'
+    path_to_source = 'Source/Authority/'
+
+
+    base_img = tifffile.imread(path_to_soil)
+    base_img[base_img > 100] = 0
+    base_img[base_img > 50] = 255
+    base_img[base_img <= 50] = 0
+    base_img[base_img == None] = 0
+
+    tifffile.imwrite('Intermediate/External/soil.tif', base_img)
+
+    with rasterio.open(path_to_soil) as naip:
+        with rasterio.open(
+            'Intermediate/External/soil.tif',
+            'w',
+            driver='GTiff',
+            count=1,
+            height=base_img.shape[0],
+            width=base_img.shape[1],
+            dtype=base_img.dtype,
+            crs=naip.crs,
+            transform=naip.transform,
+            ) as dst:
+                dst.write(base_img, indexes = 1)
+
+
+    src_ds = gdal.Open('Intermediate/External/soil.tif')
+
+    srcband = src_ds.GetRasterBand(1)
+    dst_layername = 'polygon'
+    drv = ogr.GetDriverByName("GPKG")
+    dst_ds = drv.CreateDataSource('Intermediate/External/soil.gpkg')
+
+    sp_ref = osr.SpatialReference()
+    sp_ref.SetFromUserInput('EPSG:4326')
+
+    dst_layer = dst_ds.CreateLayer(dst_layername, srs = sp_ref )
+    gdal.Polygonize( srcband, None, dst_layer, 0, [], callback=None )
+
+    del src_ds
+    del dst_ds
+
+
+
+    topo_gpkg = 'Intermediate/External/soil.gpkg'
+    region_gpkg = path_to_source+'lakes_regions.gpkg'
+
+    layer1 = gpd.read_file(region_gpkg)
+    layer2 = gpd.read_file(topo_gpkg)
+
+    # Ovalap polygons from two gpkg
+    overlay_polygon = gpd.overlay(layer1, layer2.to_crs(epsg=3857), how='intersection', keep_geom_type=False)
+    overlay_polygon['overlap_area'] = overlay_polygon['geometry'].area/10**6
+    overlay_polygon['s_id'] = range(1, overlay_polygon.shape[0]+1)
+
+    for region_id in range(1, 7):
+        candidate_sid = overlay_polygon[overlay_polygon['region_num'] == region_id]
+        print(candidate_sid)
+
+        if candidate_sid.shape[0] > 1:
+            overlapped_sid = candidate_sid['s_id'].values.tolist()
+
+            max_value = -1
+            sid_to_keep = -1
+            for this_sid in overlapped_sid:
+                this_area = overlay_polygon[(overlay_polygon['s_id'] == this_sid)]['overlap_area'].values.tolist()[0]
+                if this_area > max_value:
+                    max_value = this_area
+                    sid_to_keep = this_sid
+            
+            for this_sid in overlapped_sid:
+                if this_sid != sid_to_keep:
+                    overlay_polygon.drop(overlay_polygon[overlay_polygon['s_id'] == this_sid].index, inplace = True)
+
+    overlay_polygon.to_file('Intermediate/External/soil_based_polygon.gpkg', layer='polygon', driver='GPKG')
+
+
+
+
+
+
 def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
     import warnings
     warnings.filterwarnings("ignore")
@@ -504,18 +587,44 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
             image_stamp = 'Greenland26X_22W_Sentinel2_'
             target_stamp = image_stamp + targeted_time + '.tif'
 
-            model_gpkg = path_to_model_sam + image_stamp + targeted_time +'_r'+ str(fid) +'_pred_'+ image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg' # need to follow the naming
-            model_gpkg_2 = path_to_model_lab + 'crop1024_shift512_dlv3p_eval_overlap_leeje_0928_' + image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg' # need to follow the naming
+            model_gpkg = path_to_model_sam + image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg'
+            for target_file in os.listdir(path_to_model_sam):
+                if target_file.endswith('.gpkg'):
+                    if (image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg') in target_file:
+                        model_gpkg = path_to_model_sam + target_file
+                        break
+            
+            model_gpkg_2 = path_to_model_lab + image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg'
+            for target_file in os.listdir(path_to_model_lab):
+                if target_file.endswith('.gpkg'):
+                    if (image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg') in target_file:
+                        model_gpkg_2 = path_to_model_lab + target_file
+                        break
+
+            #model_gpkg = path_to_model_sam + image_stamp + targeted_time +'_r'+ str(fid) +'_pred_'+ image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg' # need to follow the naming
+            #model_gpkg_2 = path_to_model_lab + 'crop1024_shift512_dlv3p_eval_overlap_leeje_0928_' + image_stamp + targeted_time +'_r'+ str(fid) +'__out.gpkg' # need to follow the naming
 
             topo_gpkg = 'Intermediate/External/topo_based_polygon.gpkg'
             color_gpkg = 'Intermediate/Postprocessing_Output/color_based_polygon.gpkg'
+            soil_gpkg = 'Intermediate/External/soil_based_polygon.gpkg'
 
+
+            if os.path.isfile(topo_gpkg) == False:
+                print(topo_gpkg + '... Topo-based File not exist, proceed with preprocessing first if tif file exists...')
+                continue
+            if os.path.isfile(color_gpkg) == False:
+                print(color_gpkg + '... Color-based File not exist, proceed with preprocessing first if tif file exists...')
+                continue
+            if os.path.isfile(soil_gpkg) == False:
+                print(soil_gpkg + '... Soil-based File not exist, proceed with preprocessing first if tif file exists...')
+                continue
             if os.path.isfile(model_gpkg) == False:
-                print(model_gpkg + '... File not exist...')
+                print(model_gpkg + '... File for 1st model not exist...')
                 continue
             if os.path.isfile(model_gpkg_2) == False:
-                print(model_gpkg_2 + '... File not exist...')
+                print(model_gpkg_2 + '... File for 2nd model not exist...')
                 continue
+            
 
             print(image_stamp + targeted_time +'_r'+ str(fid))
 
@@ -523,10 +632,22 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
             layer2 = gpd.read_file(topo_gpkg)
             layer3 = gpd.read_file(color_gpkg)
             layer4 = gpd.read_file(model_gpkg_2)
+            layer5 = gpd.read_file(soil_gpkg)
 
             model_polygon = layer1[(layer1['image']==target_stamp) & (layer1['region_num']==targeted_region)]
             model_polygon['m_id'] = range(1, model_polygon.shape[0]+1)
             model_polygon['m_area'] = model_polygon['geometry'].area/10**6
+
+            model_polygon2 = layer4[(layer4['image']==target_stamp) & (layer4['region_num']==targeted_region)]
+            model_polygon2['m2_id'] = range(1, model_polygon2.shape[0]+1)
+            model_polygon2['m2_area'] = model_polygon2['geometry'].area/10**6
+
+            if model_polygon.shape[0] == 0:
+                layer1 = gpd.read_file(model_gpkg_2)
+                model_polygon = layer1[(layer1['image']==target_stamp) & (layer1['region_num']==targeted_region)]
+                model_polygon['m_id'] = range(1, model_polygon.shape[0]+1)
+                model_polygon['m_area'] = model_polygon['geometry'].area/10**6
+
 
             topo_polygon = layer2[(layer2['region_num']==targeted_region)]
             topo_polygon['t_id'] = range(1, topo_polygon.shape[0]+1)
@@ -536,9 +657,7 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
             color_polygon['c_id'] = range(1, color_polygon.shape[0]+1)
             color_polygon['c_area'] = color_polygon['geometry'].area/10**6
 
-            model_polygon2 = layer4[(layer4['image']==target_stamp) & (layer4['region_num']==targeted_region)]
-            model_polygon2['m2_id'] = range(1, model_polygon2.shape[0]+1)
-            model_polygon2['m2_area'] = model_polygon2['geometry'].area/10**6
+            
 
 
             overlay_polygon = gpd.overlay(model_polygon, topo_polygon, how='intersection', keep_geom_type=False)
@@ -640,16 +759,33 @@ def postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg):
                     revived_record = gpd.GeoDataFrame([{'image':target_stamp, 'region_num':targeted_region, 'geometry':model_polygon2[(model_polygon2['m2_id']==selected_mid)]['geometry'].values[0], 'm2_id':selected_mid, 'm2_area':model_polygon2[(model_polygon2['m2_id']==selected_mid)]['m2_area'].values[0]}])
                     processed_polygon = gpd.GeoDataFrame( pd.concat( [processed_polygon, revived_record], ignore_index=True), crs=processed_polygon.crs )
 
+            #processed_polygon.to_file('Intermediate/Output/postprocessed_polygons_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'(7).gpkg', layer='polygon', driver='GPKG')
+
+            
+            ### Apply soil_based polygon to filter false positives
+            processed_polygon['p_id'] = range(1, processed_polygon.shape[0]+1)
+
+            overlay_polygon6 = gpd.overlay(processed_polygon, layer5, how='intersection', keep_geom_type=False)
+            overlay_polygon6['overlap_area'] = overlay_polygon6['geometry'].area/10**6
+            candidate_to_traverse = processed_polygon.shape[0]
+
+            for selected_pid in range(1, candidate_to_traverse+1):
+                candidate_pid = overlay_polygon6[overlay_polygon6['p_id'] == selected_pid]
+                if candidate_pid.shape[0] == 0:
+                    processed_polygon.drop(processed_polygon[processed_polygon['p_id'] == selected_pid].index, inplace = True)
+
 
             processed_polygon.to_file('Intermediate/Output/postprocessed_polygons_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'.gpkg', layer='polygon', driver='GPKG')
 
-            print(giscup_evaluation_f1_per_map(targeted_time, targeted_region, 'Source/Authority/lake_polygons_training.gpkg' , model_gpkg_2))
             print(giscup_evaluation_f1_per_map(targeted_time, targeted_region, 'Source/Authority/lake_polygons_training.gpkg' , model_gpkg))
+            print(giscup_evaluation_f1_per_map(targeted_time, targeted_region, 'Source/Authority/lake_polygons_training.gpkg' , model_gpkg_2))
             print(giscup_evaluation_f1_per_map(targeted_time, targeted_region, 'Source/Authority/lake_polygons_training.gpkg' , 'Intermediate/Output/postprocessed_polygons_'+str(image_stamp)+str(targeted_time)+'_r'+str(targeted_region)+'.gpkg'))
 
-
+            processed_polygon = processed_polygon.drop('p_id', axis=1)
             processed_polygon = processed_polygon.drop('m_id', axis=1)
             processed_polygon = processed_polygon.drop('m_area', axis=1)
+            processed_polygon = processed_polygon.drop('m2_id', axis=1)
+            processed_polygon = processed_polygon.drop('m2_area', axis=1)
 
             if not os.path.isfile(output_gpkg):
                 processed_polygon.to_file(output_gpkg, driver="GPKG")
@@ -687,7 +823,7 @@ def sweeper():
 
 
 
-def preparing_for_postprocessing(path_to_source, path_to_topo):
+def preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil):
     runningtime_start = datetime.now()
     # some preprocessing for color-based extraction
     initialization_dirs()
@@ -703,16 +839,48 @@ def preparing_for_postprocessing(path_to_source, path_to_topo):
 
     # gpkg for topo-based polygon
     topo_to_gpkg(path_to_source, path_to_topo)
-    print('Finish preparing for postprocessing......', datetime.now()-runningtime_start)
 
+    # gpkg for soil-based polygon
+    soil_to_gpkg(path_to_source, path_to_soil)
+    print('Finish preparing for postprocessing......', datetime.now()-runningtime_start)
     sweeper()
 
 
 
-def postprocessing_with_external(path_to_source, path_to_topo, path_to_model_sam, path_to_model_lab, output_gpkg):
+def postprocessing_with_external(path_to_source, path_to_topo, path_to_soil, path_to_model_sam, path_to_model_lab, output_gpkg):
 
-    preparing_for_postprocessing(path_to_source, path_to_topo)
+    preparing_for_postprocessing(path_to_source, path_to_topo, path_to_soil)
     sweeper()
     postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg)
 
 
+
+def main():
+    path_to_source = args.data_root
+    path_to_topo = args.data_topo
+    path_to_soil = args.data_soil
+    path_to_model_sam = args.sam_dir
+    path_to_model_lab = args.dpl_dir
+    output_gpkg = args.result_name
+
+    postprocessing_with_external(path_to_source, path_to_topo, path_to_soil, path_to_model_sam, path_to_model_lab, output_gpkg)
+    #postprocessing(path_to_model_sam, path_to_model_lab, output_gpkg)
+
+
+
+
+import argparse
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_root', type=str, default='Source/Authority/')
+    parser.add_argument('--result_name', type=str, default='postprocessed_output.gpkg')
+    parser.add_argument('--data_topo', type=str, default='topographic_sink.tif')
+    parser.add_argument('--data_soil', type=str, default='NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif')
+    parser.add_argument('--sam_dir', type=str, default='Model_Based/regional_gkpg/')
+    parser.add_argument('--dpl_dir', type=str, default='Model_Based/dl3p_leeje_12_results/')
+
+
+    args = parser.parse_args()
+
+    print(f"Processing output for: {args.result_name}")
+    main()
