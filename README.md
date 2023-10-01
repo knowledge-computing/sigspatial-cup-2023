@@ -88,10 +88,11 @@ We formulate the problem as a pixel-level binary-class classification problem, w
     - MASK_DIR: the directory of corresponding masks
     - POSITIVE_FILE: the txt file containing positive samples
     - HARD_NEGATIVE_FILE: the txt file containing hard negative samples
-- To test/inference, run `test.py --region [REGION] --epoch [EPOCH] --img_dir [IMG_DIR]`
+- To test/inference, run `test.py --region [REGION] --model [MODEL_WEIGHT] --img_dir [IMG_DIR] --test_file [TEST_FILE]`
     - REGION: The region name to generate segmentation masks
-    - EPOCH: The model from the epoch from the training
+    - MODEL_WEIGHT: model weight (model checkpoint (.pth file))
     - IMG_DIR: the directory of testing images
+    - TEST_FILE: the txt file containing test samples
 
 <!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
 
