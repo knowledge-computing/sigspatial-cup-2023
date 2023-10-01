@@ -6,16 +6,18 @@ Our team proposes an ensembled approach that leverages two machine learning mode
 
 ## Results for Submission
 
+A link to the generated GPKG is [https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg](https://github.com/knowledge-computing/sigspatial-cup-2023/tree/main/GPKG/lake_poygons_test.gpkg).
+
 
 The following content is organized as follows:
-1. <a href="#data-preprocessing">Data Preprocessing</a>
-2. <a href="#image-segmentation-models">Image Segmentation Models</a>
-    * 2.1. <a href="#segment-anything-model">Segment Anything Model</a>
-    * 2.2. <a href="#deeplabv3plus">DeepLabv3Plus</a>
-3. <a href="#external-data-resources">External Data Resources</a>
-    * 3.1. <a href="#topographic-sink">Topographic Sink</a>
-    * 3.2. <a href="#soil">Soil</a>
-4. <a href="#data-post-processing">Data Post-Processing</a>
+1. <a href="#1-data-preprocessing">Data Preprocessing</a>
+2. <a href="#2-image-segmentation-models">Image Segmentation Models</a>
+    * 2.1. <a href="#21-segment-anything-model">Segment Anything Model</a>
+    * 2.2. <a href="#22-deeplabv3">DeepLabv3Plus</a>
+3. <a href="#3-external-data-resources">External Data Resources</a>
+    * 3.1. <a href="#31-topographic-sink">Topographic Sink</a>
+    * 3.2. <a href="#32-soil">Soil</a>
+4. <a href="#4-data-post-processing">Data Post-Processing</a>
 
 ---
 
@@ -66,7 +68,7 @@ The following content is organized as follows:
 ### Description
 We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes) and hard negative samples (no lake but having high variability in image color or detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
 
-### 2.1. [Segment Anything Model](https://segment-anything.com/)
+### 2.1. Segment Anything Model
 **Directory** `./models/SAM/`
 <!-- - We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us.  -->
 
