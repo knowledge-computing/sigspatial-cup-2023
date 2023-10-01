@@ -57,7 +57,6 @@ def main(args):
         os.makedirs(output_dir)
 
     target_size = 1024
-#     test_dir = "/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_images"
     test_dir = f"/home/yaoyi/shared/sigspatial/target_crop1024_shift512/test_images"
 
     for img_name in test_list:
