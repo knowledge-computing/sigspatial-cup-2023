@@ -81,6 +81,7 @@ We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) o
 **Environment Setup** <br>
 The model is trained with python 3.8 and CUDA 11.3. We recommend to run in a conda environment. <br>
 > `conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge` <br>
+
 **How to run** <br>
 - Configuration detail (./configs/config.yml) <br>
 > ` config['dataset']['base_path'] ` : the directory path of entire images and masks (train and test). Please make sure that the images are under  `train_images ` and the masks are under  `train_mask`  <br>
