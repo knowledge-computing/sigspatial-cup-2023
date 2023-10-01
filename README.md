@@ -82,14 +82,13 @@ We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) o
 **Environment Setup** <br>
 The model is trained with python 3.8 and CUDA 11.3. We recommend to run in a conda environment. <br>
 `conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge` <br>
+- To install the environment, `pip install -r requirements.txt ` <br>
 
 **How to run** <br>
 - Configuration detail (./configs/config.yml) <br>
     - ` config['dataset']['base_path'] ` : the directory path of entire images and masks (train and test). Please make sure that the images are under  `train_images ` and the masks are under  `train_mask`  <br>
     - `config['dataset']['region_txt_base_path']` : the directory path of txt files that contains the list of Positive train set, Negative train set and Test set. Please make sure the name of each txt file : `train_pos.txt`,`train_neg.txt`,`test.txt` <br>
     - `config['dataset']['save_res_path']`: the directory path to save the prediction results <br>
-
-- To install the environment, `pip install -r requirements.txt ` <br>
 - To train the model, `python main.py -c configs/config.yml --train`<br>
 - To test the model with the test data, `python main.py -c configs/config.yml --predict_on_test`<br>
 - To predict the model with images `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
