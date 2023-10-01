@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 
 def main():
 
-    manual_mask_file = os.path.join(args.data_root, f'mountain_mask.csv')
+    manual_mask_file = './Intermediate/mountain_mask.csv'
     if os.path.exists(manual_mask_file):
         manual_mask_dict = load_manual_mask(manual_mask_file)
     else:
