@@ -30,7 +30,6 @@ torch.manual_seed(1)
 
 
 INPUT_PATCH_SIZE = 1024
-num_epochs = 10
 
 
 def main(args):
@@ -53,12 +52,8 @@ def main(args):
     if not os.path.isdir(checkpoint_dir):
         os.makedirs(checkpoint_dir)
     
-    
     with open(positive_file, 'r') as f:
         positive_list = f.readlines()
-
-    with open(negative_file, 'r') as f:
-        negative_list = f.readlines()
 
     with open(hard_negative_file, 'r') as f:
         hard_negative_list = f.readlines()
@@ -185,7 +180,7 @@ def main(args):
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epoch', type=int, default=10)
+    parser.add_argument('--epoch', type=int, default=1)
     parser.add_argument('--batch', type=int, default=8)
     parser.add_argument('--lr', type=float, default=5e-6)
     parser.add_argument('--img_dir', type=str, default="/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_images")
