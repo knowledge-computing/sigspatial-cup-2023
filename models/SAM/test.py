@@ -25,7 +25,7 @@ def main(args):
     model = SamModel.from_pretrained("facebook/sam-vit-base")
     model.to(device)
 
-    model.load_state_dict(torch.load(f'checkpoints_final/ep{ep}.pth'))
+    model.load_state_dict(torch.load(f'checkpoints/ep{ep}.pth'))
     
     model.eval()
     INPUT_PATCH_SIZE=1024
