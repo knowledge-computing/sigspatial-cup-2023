@@ -42,6 +42,7 @@ We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything
 **Directory** `./models/DeepLabv3Plus`
 
 **Environment Setup**
+<br>
 The model is trained with python 3.8 and CUDA 11.3 
 `pip install -r requirements.txt `
 
