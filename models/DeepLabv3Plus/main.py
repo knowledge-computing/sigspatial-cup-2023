@@ -39,8 +39,8 @@ def predict_on_test_set(args):
         config = yaml.load(f, Loader=yaml.FullLoader)
 
     config['network']['use_cuda'] = config['network']['use_cuda'] and torch.cuda.is_available()
-
-    predictor = Predictor(config, checkpoint_path='./experiments/checkpoint_best.pth.tar')
+    check_path=config["model"]['weight']
+    predictor = Predictor(config, checkpoint_path=check_path)
 
     predictor.inference_on_test_set()
     # predictor.segment_image()
