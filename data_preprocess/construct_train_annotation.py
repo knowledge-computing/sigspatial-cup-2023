@@ -100,15 +100,17 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_root', type=str, default='../dataset')
-    parser.add_argument('--output_dir', type=str, default='../dataset')
-    parser.add_argument('--crop_size', type=int, default=512)
-    parser.add_argument('--shift_size', type=int, default=256)
+    parser.add_argument('--output_path', type=str, default='../dataset/train_crop1024_shift512')
+    parser.add_argument('--crop_size', type=int, default=1024)
+    parser.add_argument('--shift_size', type=int, default=512)
     args = parser.parse_args()
 
     args.anno_file = os.path.join(args.data_root, 'annotations.json')
-    args.output_dir = os.path.join(args.output_dir, f'train_crop{args.crop_size}_shift{args.shift_size}')
-    args.crop_img_path = os.path.join(args.output_dir, 'train_images')
-    args.output_json = os.path.join(args.output_dir, 'train_poly.json')
+    args.crop_img_path = os.path.join(args.output_path, 'train_images')
+    if not os.path.exists(args.crop_img_path):
+        os.makedirs(args.crop_img_path)
+    
+    args.output_json = os.path.join(args.output_path, 'train_poly.json')
     with open(args.anno_file, 'r') as f:
         annotations = json.load(f)
     

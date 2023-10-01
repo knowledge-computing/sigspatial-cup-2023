@@ -1,8 +1,6 @@
 import os
 import argparse
-import numpy as np
 import json
-from PIL import Image
 
 from utils import *
 
@@ -61,8 +59,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_root', type=str, default='../dataset/')
-    parser.add_argument('--crop_size', type=int, default=512)
-    parser.add_argument('--shift_size', type=int, default=256)
+    parser.add_argument('--crop_size', type=int, default=1024)
+    parser.add_argument('--shift_size', type=int, default=512)
     args = parser.parse_args()
 
     main()

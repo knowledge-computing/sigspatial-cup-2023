@@ -6,7 +6,7 @@ import cv2
 import json
 
 def main():
-    output_path = os.path.join(args.data_root, f'train_crop{crop_size}_shift{shift_size}')
+    output_path = args.data_path 
 
     output_mask_path = os.path.join(output_path, 'train_mask/')
     if not os.path.exists(output_mask_path):
@@ -33,9 +33,8 @@ def main():
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_root', type=str, default='../dataset')
-    parser.add_argument('--crop_size', type=int, default=512)
-    parser.add_argument('--shift_size', type=int, default=256)
+    parser.add_argument('--data_path', type=str, default='../dataset/train_crop1024_shift512')
+    parser.add_argument('--crop_size', type=int, default=1024)
     args = parser.parse_args()
 
     main()

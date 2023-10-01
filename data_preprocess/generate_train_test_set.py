@@ -19,7 +19,7 @@ target_regions = [
 
 def main():
     
-    data_path = os.path.join(args.data_root, f'train_crop{args.crop_size}_shift{args.shift_size}')
+    data_path = args.data_path
     train_json = os.path.join(data_path, 'train_poly.json')
     with open(train_json, 'r') as f:
         data = json.load(f)
@@ -31,6 +31,19 @@ def main():
     
     with open(os.path.join(data_path, f'hard_neg_images.json')) as f:
         hard_neg_images = json.load(f)
+
+    hard_neg_images2 = {}
+    with open(os.path.join(data_path, f'hard_neg_images2.txt')) as f:
+        for line in f.readlines():
+            hard_neg_images2[line.strip()] = 1
+    
+    # the annotations on these images are bad
+    bad = []
+    inverse_index_mapping = {v: k for k, v in data['index_mapping'].items()}
+    for anno in data['annotations']:
+        if len(anno['poly']) <= 8:
+            bad.append(inverse_index_mapping[anno['image_id']])
+
     
     for region in target_regions:
     
@@ -42,15 +55,17 @@ def main():
         for image in data['images']:
             image_name = image['file_name']
             if invalid_images.get(image_name) is None and region not in image_name:
-                if data['img2anno'].get(image_name):
+                if data['img2anno'].get(image_name) and image_name not in bad:
                     train_pos_images.append(image_name)
                 else:
                     train_neg_images.append(image_name)
-                if hard_neg_images.get(image_name) and hard_neg_images[image_name] > 3.8:
+                if hard_neg_images.get(image_name) and hard_neg_images[image_name] > 3.7:
+                    train_hard_neg_images.append(image_name)
+                if hard_neg_images2.get(image_name):
                     train_hard_neg_images.append(image_name)
             elif region in image_name:
                 test_images.append(image_name)
-        
+
         with open(os.path.join(region_folder, f'train_pos.txt'), 'w') as f:
             for image in train_pos_images:
                 f.writelines(image + '\n')
@@ -60,7 +75,7 @@ def main():
                 f.writelines(image + '\n')
     
         with open(os.path.join(region_folder, f'train_hard_neg.txt'), 'w') as f:
-            for image in train_hard_neg_images:
+            for image in list(set(train_hard_neg_images)):
                 f.writelines(image + '\n')
     
         with open(os.path.join(region_folder, f'test.txt'), 'w') as f:
@@ -71,9 +86,7 @@ def main():
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_root', type=str, default='../dataset/')
-    parser.add_argument('--crop_size', type=int, default=512)
-    parser.add_argument('--shift_size', type=int, default=256)
+    parser.add_argument('--data_path', type=str, default='../dataset/train_crop1024_shift512')
     args = parser.parse_args()
 
     main()
