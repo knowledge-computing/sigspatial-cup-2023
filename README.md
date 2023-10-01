@@ -22,6 +22,7 @@ The following content is organized as follows:
 
 ## Data Preprocessing
 **Directory** `./data_preprocess/`
+
 The data preprocssing creates a training dataset from the provided competition data for machine learnning models. The generated datasets include [region_images](https://drive.google.com/drive/folders/1tP-hur0vZkY_7WkilohA0zXQkk0qpHum?usp=drive_link), [training set](https://drive.google.com/drive/folders/1-3Ibl_DvAdwxMAIj3uwjMYr0JePSdWfF?usp=drive_link), [inference set](https://drive.google.com/file/d/1-MwE2wfwRkB7JJ3chsJdlghAcJ0VbiXC/view?usp=drive_link). You can download these files to avoid the following steps and directly go to [Image Segmentation Models](#2-image-segmentation-models).
 
 **How to run**
@@ -60,6 +61,7 @@ The data preprocssing creates a training dataset from the provided competition d
     - DATA_PATH: data directory path, e.g., ../dataset/train_crop1024_shift512
     - You need [hard_neg_images.json](https://drive.google.com/file/d/13UDQGBR-KEjZ6sIOxSZwqKog6cjwuSGd/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/1emtgoMzDUkeFf2RAOzmHjeSO7uX5zZ9e/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/19XkGd3ExaY5r9olrQakA311QMauGah-8/view?usp=drive_link) under DATA_PATH
 
+---
   
 ## Image Segmentation Models 
 
@@ -78,15 +80,18 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 
 **How to run**
 
-- To train the model, run `train.py --epoch [NUM_EPOCH] --batch [NUM_BATCH] --img_dir [IMAGE_PATH]`
-    - NUM_EPOCH: The maximum number of training epoches 
-    - NUM_BATCH: Batch size
-    - IMAGE_PATH: the root directory of image and mask folder
-- To test the model, run `test.py --region [REGION_NAME] --epoch [BEST_EPOCH] --img_dir [IMAGE_PATH]`
-    - REGION_NAME: The region name to generate segmentation masks
-    - BEST_EPOCH: The model from the (best) epoch from the training
-    - IMAGE_PATH: the root directory of image and mask folder
-- To inference given images, run `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br><br>
+- To train, run `train.py --epoch [EPOCH] --batch [BATCH] --lr [LR] --img_dir [IMG_DIR] --mask_dir [MASK_DIR] --postive_file [POSITIVE_FILE] --hard_negative_file [HARD_NEGATIVE_FILE]`
+    - EPOCH: The maximum number of training epoches 
+    - BATCH: Batch size
+    - IMG_DIR: the directory of training images
+    - MASK_DIR: the directory of corresponding masks
+    - POSITIVE_FILE: the txt file containing positive samples
+    - HARD_NEGATIVE_FILE: the txt file containing hard negative samples
+- To test/inference, run `test.py --region [REGION] --epoch [EPOCH] --img_dir [IMG_DIR]`
+    - REGION: The region name to generate segmentation masks
+    - EPOCH: The model from the epoch from the training
+    - IMG_DIR: the directory of testing images
+<br>
 
   
 
@@ -106,15 +111,16 @@ We formulate the problem as a pixel-level binary-class classification problem, w
     - `base_path'` : the root directory of image and mask folder <br> 
     - `region_txt_base_path` : the directory of txt files indicating positive and negative samples, named as `train_pos.txt`, `train_neg.txt`, `test.txt` (if exists) <br>
     - `save_res_path`: the directory to the segmentation results <br><br>
-- To train the model, run `python main.py -c configs/config.yml --train`<br>
-- To test the model, run `python main.py -c configs/config.yml --predict_on_test`<br>
+- To train, run `python main.py -c configs/config.yml --train`<br>
+- To test, run `python main.py -c configs/config.yml --predict_on_test`<br>
 - To inference given images, run `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br><br>
 
+---
 
 
 ## External Data Resources
 ### Topographic Sink
-Since lakes are defined by open water of some depth, we use the [ArcticDEM](https://data.pgc.umn.edu/elev/dem/setsm/ArcticDEM/mosaic/latest/100m/) to identify the potential locations for supraglacial lakes. We generate topographic sinks to postprocess the model output. You can download the file [HERE](https://drive.google.com/file/d/1ZFti7I1OaInSv7wicis-acln5-y__e6p/view?usp=drive_link). 
+Since lakes are defined by open water of some depth, we use the [ArcticDEM](https://data.pgc.umn.edu/elev/dem/setsm/ArcticDEM/mosaic/latest/100m/) to identify the potential locations for lakes. We generate topographic sinks to postprocess the model output. You can download the file [HERE](https://drive.google.com/file/d/1ZFti7I1OaInSv7wicis-acln5-y__e6p/view?usp=drive_link). 
 
 The process of generating topographic sinks from ArcticDEM has two steps. First, we employ the open-source WhiteboxToolsTM library to fill the depressions in the ArcticDEM and eliminate flat areas. Second, we generate topographic sinks by subtracting the output of the first step from the original ArcticDEM. Locations, where the subtraction results yield values smaller than zero, represent the topographic sinks.
 
@@ -122,6 +128,7 @@ The process of generating topographic sinks from ArcticDEM has two steps. First,
 ### Soil Data
 We use the soil information to further illiminate the detected lakes that are not located in the glacier area. We use [Northern Circumpolar Soil Carbon Database version 2 (NCSCDv2)](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf), a geospatial database that records the amount of organic carbon storage in soils of the northern circumpolar permafrost region down to a depth of 300 cm. Since the dataset delimited the areas that are covered by glaciers for most times in a year, we use this dataset to identify the glacier area and exclude lakes that are not located on glaciers. You can download the file [HERE](https://drive.google.com/file/d/15RIpVXElhw882SXyvKBltMBRn3lMtsNr/view?usp=drive_link). 
 
+---
 
 ## Data Post-Processing
 **Directory** `./data_postprocess/`
