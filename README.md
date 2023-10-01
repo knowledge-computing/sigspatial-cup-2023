@@ -97,7 +97,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 ### 2.2. DeepLabv3+
 **Directory** `./models/DeepLabv3Plus/`
 
-**Model Weights** You can download the model weights from [HERE](https://drive.google.com/file/d/10CxDd_ZUCrLriYQ0bNU16XfphITb043q/view?usp=sharing). Please make sure to place the weights under `weight/` directory.
+**Model Weights** You can download the model weights from [HERE](https://drive.google.com/file/d/10CxDd_ZUCrLriYQ0bNU16XfphITb043q/view?usp=sharing). Please place the downloaded model weights under `./models/DeepLabv3Plus/weight/`
 
 **Environment Setup** <br>
 - The model is trained with python 3.8 and CUDA 11.3
