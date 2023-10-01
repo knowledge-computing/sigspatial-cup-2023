@@ -806,6 +806,20 @@ def postprocessing(path_to_source, path_to_model_sam, path_to_model_lab, output_
                 submission = gpd.GeoDataFrame(pd.concat([submission, processed_polygon], ignore_index=True))
                 print(submission.columns)
                 submission.to_file(output_gpkg, driver="GPKG")
+    
+    postprocessed_output = gpd.read_file(output_gpkg)
+    postprocessed_output.drop(postprocessed_output[postprocessed_output.geometry.geometry.type!='Polygon'].index, inplace = True)
+    postprocessed_output.to_file(output_gpkg, driver="GPKG")
+
+    #postprocessed_output0 = postprocessed_output.loc[postprocessed_output.geometry.geometry.type=='Polygon']
+    #print(postprocessed_output0.shape, postprocessed_output.shape)
+
+    postprocessed_output = gpd.read_file(output_gpkg)
+    out_geo_df = gpd.GeoDataFrame(postprocessed_output, geometry=postprocessed_output['geometry'], crs='EPSG:3857')
+    if os.path.exists(output_gpkg):
+        os.remove(output_gpkg)
+    out_geo_df.to_file(output_gpkg, driver='GPKG', layer='lakes')
+
 
     F1 = 0.0
     if (TP1+FP1+FN1) > 0:
