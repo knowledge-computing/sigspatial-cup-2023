@@ -19,7 +19,7 @@ The following content is organized as follows:
 
 ---
 
-## Data Preprocessing
+## 1. Data Preprocessing
 **Directory** `./data_preprocess/`
 
 - The data preprocssing mainly creates training dataset from the provided competition data for machine learnning models.
@@ -61,12 +61,12 @@ The following content is organized as follows:
     - You need [hard_neg_images.json](https://drive.google.com/file/d/13UDQGBR-KEjZ6sIOxSZwqKog6cjwuSGd/view?usp=drive_link), [hard_neg_images.txt](https://drive.google.com/file/d/1emtgoMzDUkeFf2RAOzmHjeSO7uX5zZ9e/view?usp=drive_link), and [invalid_image.txt](https://drive.google.com/file/d/19XkGd3ExaY5r9olrQakA311QMauGah-8/view?usp=drive_link) under DATA_PATH
 
   
-## Image Segmentation Models 
+## 2. Image Segmentation Models 
 
 ### Description
-We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes) and hard negative samples (no lake but having high variability in image color or detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: (Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/)) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
+We formulate the problem as a pixel-level binary-class classification problem, where supraglacial lakes should be predicted as 1 and backgrounds should be predicted as 0. We use the provided lake labels to construct a training set of positive samples (containing lakes) and hard negative samples (no lake but having high variability in image color or detection failures). Due to imbalanced positive and negative samples, we use the weighted random sampler to select balanced positive and negative samples in each training batch. We fine-tuned two machine learning models for the task: Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) and [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch).
 
-### [Segment Anything Model](https://segment-anything.com/)
+### 2.1. [Segment Anything Model](https://segment-anything.com/)
 **Directory** `./models/SAM/`
 <!-- - We fine-tuned Facebook's [Segment Anything Model (SAM)](https://segment-anything.com/) on the glacier training data provided to us.  -->
 
@@ -89,7 +89,7 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 
 <!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
 
-### DeepLabv3+
+### 2.2. DeepLabv3+
 **Directory** <br> 
 `./models/DeepLabv3Plus/`<br><br>
 
@@ -107,10 +107,10 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 - To test the model with the test data, `python main.py -c configs/config.yml --predict_on_test`<br>
 - To predict the model with images `python main.py -c configs/config.yml --predict --filefolder IMAGES_DIR_PATH`<br>
 
-## External Data Resources
+## 3. External Data Resources
 **Directory** `./external_datasets/`
 
-### Topographic Sink
+### 3.1. Topographic Sink
 **Description**
 We generate the topographic sinks as one of the external data resources from the ArcticDEM. Supraglacial lakes are formed in surface sinks. Therefore, the topographic sinks are potential locations for supraglacial lakes. The process of generating the topographic sinks from ArcticDEM has two steps. 
 First, we employ the open-source WhiteboxToolsTM library to fill the depressions in the ArcticDEM and eliminate flat areas. Second, we generate topographic sinks by subtracting the output of the first step from the original ArcticDEM. Locations, where the subtraction results yield values smaller than zero, represent the topographic sinks.
@@ -118,14 +118,14 @@ First, we employ the open-source WhiteboxToolsTM library to fill the depressions
 **How to use**
 - TBA
 
-### Soil
+### 3.2. Soil
 **Description**
 We use [Northern Circumpolar Soil Carbon Database version 2 (NCSCDv2)](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf), a geospatial database that records the amount of organic carbon storage in soils of the northern circumpolar permafrost region down to a depth of 300 cm. Since the dataset delimited the areas that are covered by glaciers for most times in a year, we use this dataset to identify the glacier area and exclude lakes that are not located on glaciers.
 
 **How to use**
 - Please download NCSCDv2_Greenland_WGS84_nonsoil_pct_0012deg.tif from [NCSCDv2](https://apgc.awi.de/dataset/ncscdv2-greenland-geotiff-netcdf) and place it in `./external_datasets/`. 
 
-## Data Post-Processing
+## 4. Data Post-Processing
 **Directory** `./data_postprocess/`
 
 ### Using External Data Resources
