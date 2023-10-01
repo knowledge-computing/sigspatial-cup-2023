@@ -75,14 +75,17 @@ The model is trained with python 3.11 and CUDA 11.4.
 
 ### DeepLabv3Plus
 **Directory** `./models/DeepLabv3Plus/`
-
-**Environment Setup**
-
-The model is trained with python 3.8 and CUDA 11.3. 
-- To install the environment, `pip install -r requirements.txt `
-
 **Description** <br>
 We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) on the glacier training data. The model applied Weighted Random Sampler to address the data imbalance between pixels with Lake and pixels with Non-Lake. The input mask consists of 0 (Non-Lake) and 1(Lake). 
+
+**Environment Setup**
+The model is trained with python 3.8 and CUDA 11.3. We recommend to run in a conda environment. 
+
+- To install the environment, `pip install -r requirements.txt ` <br>
+- To train the model, `python main.py -c configs/config.yml --train`<br>
+- To test the model, `python main.py -c configs/config.yml --predict_on_test`<br>
+- To predict the model `python main.py -c configs/config.yml --predict --filefolder FILE_FOLDER_NAME`<br>
+
 
 ## External Data Resources
 **Directory** `./external_datasets/`
