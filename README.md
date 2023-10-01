@@ -100,6 +100,7 @@ Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w15.jpg
     - BEST_EPOCH: The model from the (best) epoch from the training
 
 **Model Weights**
+
 You can download the finetuned model weight [from this folder](https://drive.google.com/file/d/1r6O1gCmeIz54xD7BZWTrrDWzo7Vqjedd/view?usp=drive_link).
 
 <!-- - Please refer to different training strategies (e.g., validation, 50% ratio positive/negative sampling) on [https://github.com/zekun-li/supraglacial_lake](https://github.com/zekun-li/supraglacial_lake) -->
