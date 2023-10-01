@@ -75,7 +75,7 @@ The model is trained with python 3.11 and CUDA 11.4.
 
 ### DeepLabv3Plus<br>
 **Directory** <br> 
-`./models/DeepLabv3Plus/`<br>
+`./models/DeepLabv3Plus/`<br><br>
 **Description** <br>
 We fine-tuned [DeepLabv3+](https://github.com/giovanniguidi/deeplabV3-PyTorch) on the glacier training data. The model applied Weighted Random Sampler to address the data imbalance between pixels with Lake and pixels with Non-Lake. The input mask consists of 0 (Non-Lake) and 1(Lake). <br>
 
