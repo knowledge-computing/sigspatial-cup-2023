@@ -39,12 +39,11 @@ def main(args):
     
     print(f'Train start!')
     
-    image_dir= "/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_images"
-    mask_dir = "/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_mask"
+    image_dir= args.img_dir
+    mask_dir = args.mask_dir
     
-    positive_file = f"/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_pos.txt"
-    negative_file = f"/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_neg.txt"
-    hard_negative_file = f"/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_hard_neg.txt"
+    positive_file = args.positive_file
+    hard_negative_file = args.hard_negative_file
     
     checkpoint_dir = f'checkpoints/'
     
@@ -77,7 +76,6 @@ def main(args):
             self.transform = transform
 
             self.positive_list = positive_list 
-            self.negative_list = negative_list
             self.hard_negative_list = hard_negative_list
             
             self.input_all = self.positive_list + self.hard_negative_list
@@ -190,6 +188,12 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type=int, default=10)
     parser.add_argument('--batch', type=int, default=8)
     parser.add_argument('--lr', type=float, default=5e-6)
+    parser.add_argument('--img_dir', type=str, default="/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_images")
+    parser.add_argument('--mask_dir', type=str, default="/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_mask")
+    parser.add_argument('--positive_file', type=str, default="/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_pos.txt")
+    parser.add_argument('--hard_negative_file', type=str, default="/home/yaoyi/shared/sigspatial/train_crop1024_shift512/train_hard_neg.txt")
+    
+    
     
     args = parser.parse_args()
     
