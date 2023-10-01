@@ -79,6 +79,15 @@ We formulate the problem as a pixel-level binary-class classification problem, w
 
 **How to run**
 
+- To input the images to the model, please list up the images' names on the txt file. Here is an example of the input to the train.py and test.py on SAM.
+```
+Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w10.jpg
+Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w11.jpg
+Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w12.jpg
+Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w13.jpg
+Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w14.jpg
+Greenland26X_22W_Sentinel2_2019-06-03_05_r2__h0_w15.jpg
+```
 - To train model, run `train.py --epoch [NUM_EPOCH] --batch [NUM_BATCH]`
     - NUM_EPOCH: The number of epoch to train the model
     - NUM_BATCH: The number of batch to train the model
